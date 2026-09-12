@@ -10,24 +10,19 @@ import { EventModal } from './components/EventModal';
 import { EmptyState } from './components/EmptyState';
 import { CalendarView } from './components/CalendarView';
 
-const STORAGE_KEY = 'countdown_events_v2';
-const THEME_KEY = 'countdown_theme_pref_v5';
+const STORAGE_KEY = 'countdown_events_v4';
+const THEME_KEY = 'countdown_theme_pref';
 
 export const App: React.FC = () => {
-  // Theme state - defaults strictly to Light Mode per user preference
+  // Theme state - defaults to Stitch Dark Aesthetic (#0e0e10)
   const [isDark, setIsDark] = useState<boolean>(() => {
     try {
-      // Clear legacy dark presets so user is immediately in pure Light Mode
-      localStorage.removeItem('countdown_theme_pref');
-      localStorage.removeItem('countdown_theme_pref_v2');
-      localStorage.removeItem('countdown_theme_pref_v3');
-      localStorage.removeItem('countdown_theme_pref_v4');
       const saved = localStorage.getItem(THEME_KEY);
       if (saved) return saved === 'dark';
     } catch {
       // Fallback
     }
-    return false;
+    return true;
   });
 
   // Events state
@@ -47,6 +42,7 @@ export const App: React.FC = () => {
   // UI state
   const [currentTab, setCurrentTab] = useState<TabMode>('upcoming');
   const [viewMode, setViewMode] = useState<ViewMode>('gallery');
+  const [isSorted, setIsSorted] = useState(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>('soonest');
   const [selectedCategory, setSelectedCategory] = useState<FilterCategory>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -148,32 +144,48 @@ export const App: React.FC = () => {
     setIsModalOpen(true);
   };
 
+  const handleToggleSort = () => {
+    if (!isSorted) {
+      setIsSorted(true);
+      setSortOrder('soonest');
+    } else if (sortOrder === 'soonest') {
+      setSortOrder('latest');
+    } else {
+      setIsSorted(false);
+      setSortOrder('soonest');
+    }
+  };
+
   // Filtered & Sorted Events
   const filteredEvents = useMemo(() => {
-    return events
-      .filter((evt) => {
-        if (currentTab === 'upcoming' && evt.isArchived) return false;
-        if (currentTab === 'archive' && !evt.isArchived) return false;
+    const list = events.filter((evt) => {
+      if (currentTab === 'upcoming' && evt.isArchived) return false;
+      if (currentTab === 'archive' && !evt.isArchived) return false;
 
-        if (selectedCategory !== 'all' && evt.category !== selectedCategory) {
-          return false;
-        }
+      if (selectedCategory !== 'all' && evt.category !== selectedCategory) {
+        return false;
+      }
 
-        if (searchQuery.trim()) {
-          const q = searchQuery.toLowerCase();
-          const matchName = evt.name.toLowerCase().includes(q);
-          const matchDesc = evt.description?.toLowerCase().includes(q);
-          return matchName || matchDesc;
-        }
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchName = evt.name.toLowerCase().includes(q);
+        const matchDesc = evt.description?.toLowerCase().includes(q);
+        return matchName || matchDesc;
+      }
 
-        return true;
-      })
-      .sort((a, b) => {
+      return true;
+    });
+
+    if (isSorted) {
+      return list.slice().sort((a, b) => {
         const timeA = new Date(a.targetDate).getTime();
         const timeB = new Date(b.targetDate).getTime();
         return sortOrder === 'soonest' ? timeA - timeB : timeB - timeA;
       });
-  }, [events, currentTab, selectedCategory, searchQuery, sortOrder]);
+    }
+
+    return list;
+  }, [events, currentTab, selectedCategory, searchQuery, isSorted, sortOrder]);
 
   const archiveCount = useMemo(
     () => events.filter((e) => e.isArchived).length,
@@ -181,27 +193,35 @@ export const App: React.FC = () => {
   );
 
   return (
-    <div className="relative min-h-screen text-slate-900 dark:text-white bg-[#f2f2f7] dark:bg-[#0b0b0d] flex flex-col justify-between selection:bg-accent-indigo selection:text-white transition-colors duration-300">
-      {/* Interactive Background with Spotlight cursor tracker */}
+    <div className="font-body antialiased selection:bg-white selection:text-black min-h-screen relative overflow-x-hidden bg-[#0e0e10] text-[#e5e1e4] flex flex-col justify-between">
+      {/* Interactive Dynamic Background: Ambient Dot Grid & Spotlight Glow */}
       <SpotlightBackground />
 
-      {/* Main Top Header */}
-      <Header
-        currentTab={currentTab}
-        onTabChange={(tab) => {
-          setCurrentTab(tab);
-          if (selectedEventId) handleBackToList();
-        }}
-        isDark={isDark}
-        onToggleTheme={() => setIsDark((prev) => !prev)}
-        onOpenAddModal={handleOpenAddModal}
-        archiveCount={archiveCount}
-      />
+      {/* 1. Top Navigation Bar: Shown only on Gallery / List / Calendar views, matching Stitch spec */}
+      {!selectedEvent && (
+        <Header
+          currentTab={currentTab}
+          onTabChange={(tab) => {
+            setCurrentTab(tab);
+            if (selectedEventId) handleBackToList();
+          }}
+          isDark={isDark}
+          onToggleTheme={() => setIsDark((prev) => !prev)}
+          onOpenAddModal={handleOpenAddModal}
+          archiveCount={archiveCount}
+        />
+      )}
 
-      {/* Main View Area */}
-      <main className="relative z-10 w-full pt-20 max-w-7xl mx-auto px-4 sm:px-6 pb-28 flex-1">
+      {/* Main Container */}
+      <main
+        className={`relative z-10 w-full mx-auto flex-1 ${
+          selectedEvent
+            ? 'max-w-5xl px-4 sm:px-6 pt-8 pb-12 flex flex-col justify-between'
+            : 'pt-20 max-w-7xl px-4 sm:px-6 pb-28'
+        }`}
+      >
         {selectedEvent ? (
-          /* Detail View (Stitch Light Mode Layout) */
+          /* Detail View: Exact match with Stitch Countdown - Detail (Fixed & Running) */
           <CountdownDetail
             event={selectedEvent}
             onBack={handleBackToList}
@@ -210,14 +230,15 @@ export const App: React.FC = () => {
             onToggleArchive={handleToggleArchive}
           />
         ) : currentTab === 'calendar' ? (
-          /* Calendar Monthly Timeline View */
+          /* Calendar View */
           <CalendarView
             events={events.filter((e) => !e.isArchived)}
             onSelectEvent={handleSelectEvent}
           />
         ) : (
-          /* Gallery & List Streams (Stitch Screen 1) */
+          /* Gallery & List Streams: Exact match with Stitch Countdown - Gallery (Fixed & Running) */
           <>
+            {/* 2. Toolbar / Filter Section */}
             <Toolbar
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
@@ -226,11 +247,10 @@ export const App: React.FC = () => {
               viewMode={viewMode}
               onViewModeChange={setViewMode}
               sortOrder={sortOrder}
-              onToggleSort={() =>
-                setSortOrder((prev) => (prev === 'soonest' ? 'latest' : 'soonest'))
-              }
+              onToggleSort={handleToggleSort}
             />
 
+            {/* 3. Event Cards Stream */}
             {filteredEvents.length === 0 ? (
               <EmptyState
                 title={
@@ -249,7 +269,7 @@ export const App: React.FC = () => {
                 }}
               />
             ) : viewMode === 'gallery' ? (
-              <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="eventsStream">
                 {filteredEvents.map((evt) => (
                   <EventCard
                     key={evt.id}
@@ -260,7 +280,7 @@ export const App: React.FC = () => {
                 ))}
               </section>
             ) : (
-              <section className="flex flex-col gap-3">
+              <section className="flex flex-col gap-4" id="eventsStream">
                 {filteredEvents.map((evt) => (
                   <EventCard
                     key={evt.id}
@@ -275,15 +295,15 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      {/* Floating Action Button (FAB) at bottom-right */}
+      {/* 4. Floating Action Button (Minimal White Round '+' button) */}
       {!selectedEvent && (
         <button
           type="button"
           onClick={handleOpenAddModal}
           aria-label="Add New Event"
-          className="fixed bottom-8 right-8 z-40 w-14 h-14 rounded-full bg-slate-900 dark:bg-white text-white dark:text-black shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center border border-slate-200/50 dark:border-white/20 ring-4 ring-black/5 dark:ring-white/10"
+          className="fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full bg-white text-black shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center border border-white/20"
         >
-          <span className="material-symbols-outlined text-[28px]">add</span>
+          <span className="material-symbols-outlined text-[24px]">add</span>
         </button>
       )}
 

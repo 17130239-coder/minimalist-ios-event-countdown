@@ -4,23 +4,17 @@ interface RollerDigitProps {
   value: string;
   unitLabel: string;
   widthClass?: string;
-  isAccent?: boolean;
 }
 
 export const RollerDigit: React.FC<RollerDigitProps> = ({
   value,
   unitLabel,
-  widthClass = 'min-w-[32px]',
-  isAccent = false,
+  widthClass = 'min-w-[34px]',
 }) => {
   const [currentVal, setCurrentVal] = useState(value);
   const [prevVal, setPrevVal] = useState<string | null>(null);
   const [animating, setAnimating] = useState(false);
   const prevValRef = useRef(value);
-
-  const textStyle = isAccent
-    ? 'text-[#007AFF] dark:text-[#38BDF8]'
-    : 'text-slate-950 dark:text-white';
 
   useEffect(() => {
     if (value !== prevValRef.current) {
@@ -38,19 +32,23 @@ export const RollerDigit: React.FC<RollerDigitProps> = ({
     }
   }, [value]);
 
+  const wrapperWidth = currentVal.length >= 3 ? 'w-8 min-w-[32px]' : 'w-7 min-w-[28px]';
+
   return (
     <div className="flex items-center gap-1.5">
       <div
-        className={`px-2 py-1 rounded-lg border border-slate-200/80 dark:border-white/10 bg-slate-100/90 dark:bg-white/10 shadow-xs flex items-center justify-center ${widthClass}`}
+        className={`digit-capsule px-2.5 py-1 rounded-lg border border-white/10 flex items-center justify-center ${widthClass}`}
       >
-        <div className={`roller-wrapper font-mono text-[16px] font-bold ${textStyle} tabular-nums`}>
+        <div
+          className={`roller-wrapper font-mono text-[16px] font-bold text-white tabular-nums text-center ${wrapperWidth}`}
+        >
           {prevVal !== null && animating && (
-            <div className={`roller-item slide-out font-mono text-[16px] font-bold ${textStyle}`}>
+            <div className="roller-item slide-out font-mono text-[16px] font-bold text-white">
               {prevVal}
             </div>
           )}
           <div
-            className={`roller-item font-mono text-[16px] font-bold ${textStyle} ${
+            className={`roller-item font-mono text-[16px] font-bold text-white ${
               animating ? 'slide-in-active' : ''
             }`}
           >
@@ -58,7 +56,7 @@ export const RollerDigit: React.FC<RollerDigitProps> = ({
           </div>
         </div>
       </div>
-      <span className="text-[10px] font-mono text-slate-600 dark:text-white/60 uppercase font-semibold select-none">
+      <span className="text-[10px] font-mono text-white/50 uppercase font-semibold select-none">
         {unitLabel}
       </span>
     </div>
