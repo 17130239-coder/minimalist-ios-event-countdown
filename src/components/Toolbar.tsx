@@ -1,12 +1,9 @@
 import React from 'react';
-import { FilterCategory, ViewMode, SortOrder } from '../types';
-import { CATEGORY_LABELS } from '../data/defaultEvents';
+import { ViewMode, SortOrder } from '../types';
 
 interface ToolbarProps {
   searchQuery: string;
   onSearchChange: (q: string) => void;
-  selectedCategory: FilterCategory;
-  onSelectCategory: (cat: FilterCategory) => void;
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
   sortOrder: SortOrder;
@@ -16,15 +13,11 @@ interface ToolbarProps {
 export const Toolbar: React.FC<ToolbarProps> = ({
   searchQuery,
   onSearchChange,
-  selectedCategory,
-  onSelectCategory,
   viewMode,
   onViewModeChange,
   sortOrder,
   onToggleSort,
 }) => {
-  const categories: FilterCategory[] = ['all', 'trips', 'work', 'birthdays', 'health', 'milestones'];
-
   return (
     <section className="flex flex-col lg:flex-row items-center justify-between gap-4 pt-6 pb-8">
       {/* Search Input Box (Exact Stitch Spec) */}
@@ -50,32 +43,9 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         )}
       </div>
 
-      {/* Categories & View Controls Container (Exact Stitch Spec) */}
-      <div className="flex flex-col sm:flex-row items-center justify-between w-full lg:w-auto gap-3 overflow-x-auto max-w-full">
-        {/* Category filter pills */}
-        <div className="flex items-center gap-1 p-1 bg-[#18181b] rounded-full border border-white/10 overflow-x-auto max-w-full">
-          {categories.map((cat) => {
-            const isActive = selectedCategory === cat;
-            const meta = CATEGORY_LABELS[cat];
-            return (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => onSelectCategory(cat)}
-                className={`category-pill flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs transition-all whitespace-nowrap ${
-                  isActive
-                    ? 'active-pill bg-white text-black font-semibold shadow-sm'
-                    : 'text-white/60 hover:text-white font-medium'
-                }`}
-              >
-                <span>{meta.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* View Switcher & Sort Button (Exact Stitch Spec) */}
-        <div className="flex items-center gap-2.5 self-end sm:self-auto shrink-0">
+      {/* Categories & View Controls Container (Exact Stitch Spec: View switcher & Soonest sort button) */}
+      <div className="flex items-center justify-between w-full lg:w-auto gap-3 overflow-x-auto">
+        <div className="flex items-center gap-2.5">
           {/* View switcher segmented control */}
           <div className="flex items-center p-1 bg-[#18181b] rounded-full border border-white/10" id="viewSwitcher">
             <button

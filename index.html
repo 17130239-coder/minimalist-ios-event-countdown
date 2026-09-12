@@ -10,7 +10,7 @@
     <!-- Google Fonts: Inter + JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
 
     <!-- Material Symbols Outlined -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
@@ -18,12 +18,10 @@
     <script>
       (function() {
         try {
-          const pref = localStorage.getItem('countdown_theme_pref');
-          if (pref === 'light') {
-            document.documentElement.classList.remove('dark');
-          } else {
-            document.documentElement.classList.add('dark');
-          }
+          ['countdown_events', 'countdown_events_v2', 'countdown_events_v3', 'countdown_events_v4', 'countdown_theme_pref', 'countdown_theme_pref_v2', 'countdown_theme_pref_v3', 'countdown_theme_pref_v4', 'countdown_theme_pref_v5'].forEach(function(k) {
+            localStorage.removeItem(k);
+          });
+          document.documentElement.classList.add('dark');
         } catch (e) {}
       })();
     </script>

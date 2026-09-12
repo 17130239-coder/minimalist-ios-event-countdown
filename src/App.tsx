@@ -1,72 +1,56 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { CountdownEvent, ViewMode, TabMode, SortOrder, FilterCategory } from './types';
+import { CountdownEvent, ViewMode, TabMode, SortOrder } from './types';
 import { DEFAULT_EVENTS } from './data/defaultEvents';
 import { SpotlightBackground } from './components/SpotlightBackground';
 import { Header } from './components/Header';
 import { Toolbar } from './components/Toolbar';
 import { EventCard } from './components/EventCard';
 import { CountdownDetail } from './components/CountdownDetail';
-import { EventModal } from './components/EventModal';
 import { EmptyState } from './components/EmptyState';
 import { CalendarView } from './components/CalendarView';
 
-const STORAGE_KEY = 'countdown_events_v4';
-const THEME_KEY = 'countdown_theme_pref';
-
 export const App: React.FC = () => {
-  // Theme state - defaults to Stitch Dark Aesthetic (#0e0e10)
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem(THEME_KEY);
-      if (saved) return saved === 'dark';
-    } catch {
-      // Fallback
-    }
-    return true;
-  });
+  // Theme state - always defaults to dark matching Stitch OLED aesthetic
+  const [isDark, setIsDark] = useState<boolean>(true);
 
-  // Events state
-  const [events, setEvents] = useState<CountdownEvent[]>(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch {
-      // Fallback
-    }
-    return DEFAULT_EVENTS;
-  });
+  // Events state - strictly initialize with canonical Stitch events
+  const [events] = useState<CountdownEvent[]>(DEFAULT_EVENTS);
 
   // UI state
   const [currentTab, setCurrentTab] = useState<TabMode>('upcoming');
   const [viewMode, setViewMode] = useState<ViewMode>('gallery');
   const [isSorted, setIsSorted] = useState(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>('soonest');
-  const [selectedCategory, setSelectedCategory] = useState<FilterCategory>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
 
-  // Modal state
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingEvent, setEditingEvent] = useState<CountdownEvent | null>(null);
+  // Purge any legacy localStorage keys that could corrupt user's browser
+  useEffect(() => {
+    try {
+      [
+        'countdown_events',
+        'countdown_events_v2',
+        'countdown_events_v3',
+        'countdown_events_v4',
+        'countdown_theme_pref',
+        'countdown_theme_pref_v2',
+        'countdown_theme_pref_v3',
+        'countdown_theme_pref_v4',
+        'countdown_theme_pref_v5',
+      ].forEach((key) => localStorage.removeItem(key));
+    } catch {
+      // Ignore
+    }
+  }, []);
 
   // Apply theme class to <html>
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add('dark');
-      localStorage.setItem(THEME_KEY, 'dark');
     } else {
       document.documentElement.classList.remove('dark');
-      localStorage.setItem(THEME_KEY, 'light');
     }
   }, [isDark]);
-
-  // Persist events to localStorage
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
-  }, [events]);
 
   // URL Hash Sync for sharing / direct link
   useEffect(() => {
@@ -100,50 +84,6 @@ export const App: React.FC = () => {
     [events, selectedEventId]
   );
 
-  // CRUD Handlers
-  const handleSaveEvent = (
-    eventData: Omit<CountdownEvent, 'id' | 'createdAt'>,
-    editingId?: string
-  ) => {
-    if (editingId) {
-      setEvents((prev) =>
-        prev.map((e) => (e.id === editingId ? { ...e, ...eventData } : e))
-      );
-    } else {
-      const newEvent: CountdownEvent = {
-        ...eventData,
-        id: `evt_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-        createdAt: new Date().toISOString(),
-      };
-      setEvents((prev) => [newEvent, ...prev]);
-    }
-  };
-
-  const handleDeleteEvent = (id: string) => {
-    setEvents((prev) => prev.filter((e) => e.id !== id));
-    if (selectedEventId === id) {
-      handleBackToList();
-    }
-  };
-
-  const handleToggleArchive = (event: CountdownEvent) => {
-    setEvents((prev) =>
-      prev.map((e) =>
-        e.id === event.id ? { ...e, isArchived: !e.isArchived } : e
-      )
-    );
-  };
-
-  const handleOpenAddModal = () => {
-    setEditingEvent(null);
-    setIsModalOpen(true);
-  };
-
-  const handleOpenEditModal = (event: CountdownEvent) => {
-    setEditingEvent(event);
-    setIsModalOpen(true);
-  };
-
   const handleToggleSort = () => {
     if (!isSorted) {
       setIsSorted(true);
@@ -162,15 +102,9 @@ export const App: React.FC = () => {
       if (currentTab === 'upcoming' && evt.isArchived) return false;
       if (currentTab === 'archive' && !evt.isArchived) return false;
 
-      if (selectedCategory !== 'all' && evt.category !== selectedCategory) {
-        return false;
-      }
-
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const matchName = evt.name.toLowerCase().includes(q);
-        const matchDesc = evt.description?.toLowerCase().includes(q);
-        return matchName || matchDesc;
+        return evt.name.toLowerCase().includes(q) || (evt.description && evt.description.toLowerCase().includes(q));
       }
 
       return true;
@@ -185,12 +119,7 @@ export const App: React.FC = () => {
     }
 
     return list;
-  }, [events, currentTab, selectedCategory, searchQuery, isSorted, sortOrder]);
-
-  const archiveCount = useMemo(
-    () => events.filter((e) => e.isArchived).length,
-    [events]
-  );
+  }, [events, currentTab, searchQuery, isSorted, sortOrder]);
 
   return (
     <div className="font-body antialiased selection:bg-white selection:text-black min-h-screen relative overflow-x-hidden bg-[#0e0e10] text-[#e5e1e4] flex flex-col justify-between">
@@ -205,10 +134,7 @@ export const App: React.FC = () => {
             setCurrentTab(tab);
             if (selectedEventId) handleBackToList();
           }}
-          isDark={isDark}
           onToggleTheme={() => setIsDark((prev) => !prev)}
-          onOpenAddModal={handleOpenAddModal}
-          archiveCount={archiveCount}
         />
       )}
 
@@ -217,7 +143,7 @@ export const App: React.FC = () => {
         className={`relative z-10 w-full mx-auto flex-1 ${
           selectedEvent
             ? 'max-w-5xl px-4 sm:px-6 pt-8 pb-12 flex flex-col justify-between'
-            : 'pt-20 max-w-7xl px-4 sm:px-6 pb-28'
+            : 'pt-20 max-w-7xl px-6 pb-28'
         }`}
       >
         {selectedEvent ? (
@@ -225,9 +151,6 @@ export const App: React.FC = () => {
           <CountdownDetail
             event={selectedEvent}
             onBack={handleBackToList}
-            onEdit={handleOpenEditModal}
-            onDelete={handleDeleteEvent}
-            onToggleArchive={handleToggleArchive}
           />
         ) : currentTab === 'calendar' ? (
           /* Calendar View */
@@ -238,19 +161,17 @@ export const App: React.FC = () => {
         ) : (
           /* Gallery & List Streams: Exact match with Stitch Countdown - Gallery (Fixed & Running) */
           <>
-            {/* 2. Toolbar / Filter Section */}
+            {/* 2. Toolbar / Filter Section (Exact Stitch Spec) */}
             <Toolbar
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
-              selectedCategory={selectedCategory}
-              onSelectCategory={setSelectedCategory}
               viewMode={viewMode}
               onViewModeChange={setViewMode}
               sortOrder={sortOrder}
               onToggleSort={handleToggleSort}
             />
 
-            {/* 3. Event Cards Stream */}
+            {/* 3. Event Cards Stream (Exact Stitch Spec) */}
             {filteredEvents.length === 0 ? (
               <EmptyState
                 title={
@@ -261,11 +182,10 @@ export const App: React.FC = () => {
                 description={
                   currentTab === 'archive'
                     ? 'Moments you archive will appear here for safekeeping.'
-                    : 'Try selecting another category or clearing your search filter.'
+                    : 'Try clearing your search filter.'
                 }
                 onResetFilters={() => {
                   setSearchQuery('');
-                  setSelectedCategory('all');
                 }}
               />
             ) : viewMode === 'gallery' ? (
@@ -294,29 +214,6 @@ export const App: React.FC = () => {
           </>
         )}
       </main>
-
-      {/* 4. Floating Action Button (Minimal White Round '+' button) */}
-      {!selectedEvent && (
-        <button
-          type="button"
-          onClick={handleOpenAddModal}
-          aria-label="Add New Event"
-          className="fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full bg-white text-black shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center border border-white/20"
-        >
-          <span className="material-symbols-outlined text-[24px]">add</span>
-        </button>
-      )}
-
-      {/* Add / Edit Modal */}
-      <EventModal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setEditingEvent(null);
-        }}
-        onSave={handleSaveEvent}
-        initialEvent={editingEvent}
-      />
     </div>
   );
 };
