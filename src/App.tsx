@@ -11,13 +11,22 @@ import { EmptyState } from './components/EmptyState';
 import { CalendarView } from './components/CalendarView';
 
 const STORAGE_KEY = 'countdown_events_v2';
-const THEME_KEY = 'countdown_theme_pref';
+const THEME_KEY = 'countdown_theme_pref_v5';
 
 export const App: React.FC = () => {
-  // Theme state - defaults to Light Mode per user preference
+  // Theme state - defaults strictly to Light Mode per user preference
   const [isDark, setIsDark] = useState<boolean>(() => {
-    const saved = localStorage.getItem(THEME_KEY);
-    if (saved) return saved === 'dark';
+    try {
+      // Clear legacy dark presets so user is immediately in pure Light Mode
+      localStorage.removeItem('countdown_theme_pref');
+      localStorage.removeItem('countdown_theme_pref_v2');
+      localStorage.removeItem('countdown_theme_pref_v3');
+      localStorage.removeItem('countdown_theme_pref_v4');
+      const saved = localStorage.getItem(THEME_KEY);
+      if (saved) return saved === 'dark';
+    } catch {
+      // Fallback
+    }
     return false;
   });
 
