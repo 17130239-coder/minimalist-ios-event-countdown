@@ -14,11 +14,11 @@ const STORAGE_KEY = 'countdown_events_v2';
 const THEME_KEY = 'countdown_theme_pref';
 
 export const App: React.FC = () => {
-  // Theme state
+  // Theme state - defaults to Light Mode per user preference
   const [isDark, setIsDark] = useState<boolean>(() => {
     const saved = localStorage.getItem(THEME_KEY);
     if (saved) return saved === 'dark';
-    return true; // Dark mode by default matching Stitch
+    return false;
   });
 
   // Events state
@@ -143,16 +143,13 @@ export const App: React.FC = () => {
   const filteredEvents = useMemo(() => {
     return events
       .filter((evt) => {
-        // Tab filtering
         if (currentTab === 'upcoming' && evt.isArchived) return false;
         if (currentTab === 'archive' && !evt.isArchived) return false;
 
-        // Category filter
         if (selectedCategory !== 'all' && evt.category !== selectedCategory) {
           return false;
         }
 
-        // Search query filter
         if (searchQuery.trim()) {
           const q = searchQuery.toLowerCase();
           const matchName = evt.name.toLowerCase().includes(q);
@@ -175,7 +172,7 @@ export const App: React.FC = () => {
   );
 
   return (
-    <div className="relative min-h-screen text-on-surface bg-background flex flex-col justify-between selection:bg-white selection:text-black">
+    <div className="relative min-h-screen text-slate-900 dark:text-white bg-[#f2f2f7] dark:bg-[#0b0b0d] flex flex-col justify-between selection:bg-accent-indigo selection:text-white transition-colors duration-300">
       {/* Interactive Background with Spotlight cursor tracker */}
       <SpotlightBackground />
 
@@ -195,7 +192,7 @@ export const App: React.FC = () => {
       {/* Main View Area */}
       <main className="relative z-10 w-full pt-20 max-w-7xl mx-auto px-4 sm:px-6 pb-28 flex-1">
         {selectedEvent ? (
-          /* Detail View (Stitch Screen 2) */
+          /* Detail View (Stitch Light Mode Layout) */
           <CountdownDetail
             event={selectedEvent}
             onBack={handleBackToList}
@@ -254,7 +251,7 @@ export const App: React.FC = () => {
                 ))}
               </section>
             ) : (
-              <section className="flex flex-col gap-4">
+              <section className="flex flex-col gap-3">
                 {filteredEvents.map((evt) => (
                   <EventCard
                     key={evt.id}
@@ -275,7 +272,7 @@ export const App: React.FC = () => {
           type="button"
           onClick={handleOpenAddModal}
           aria-label="Add New Event"
-          className="fixed bottom-8 right-8 z-40 w-14 h-14 rounded-full bg-white text-black shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center border border-white/20 ring-4 ring-white/10"
+          className="fixed bottom-8 right-8 z-40 w-14 h-14 rounded-full bg-slate-900 dark:bg-white text-white dark:text-black shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center border border-slate-200/50 dark:border-white/20 ring-4 ring-black/5 dark:ring-white/10"
         >
           <span className="material-symbols-outlined text-[28px]">add</span>
         </button>

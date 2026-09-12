@@ -14,18 +14,18 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   actionText = 'Show All Countdowns',
 }) => {
   return (
-    <section className="flex flex-col items-center justify-center py-20 px-6 text-center bg-[#141416] dark:bg-[#141416] bg-black/5 rounded-3xl mt-4 border border-white/10 dark:border-white/10 border-black/10">
-      <div className="w-16 h-16 rounded-full bg-white/5 dark:bg-white/5 bg-black/5 flex items-center justify-center mb-4 text-white/40 dark:text-white/40 text-black/40">
+    <section className="flex flex-col items-center justify-center py-20 px-6 text-center bg-white dark:bg-[#141416] rounded-3xl mt-4 border border-slate-200/80 dark:border-white/10 shadow-xs">
+      <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center mb-4 text-slate-400 dark:text-white/40 shadow-xs">
         <span className="material-symbols-outlined text-[32px]">event_busy</span>
       </div>
-      <h3 className="text-xl font-bold text-white dark:text-white text-black mb-2">{title}</h3>
-      <p className="text-white/60 dark:text-white/60 text-black/60 max-w-sm mb-6 text-sm">
+      <h3 className="text-xl font-bold text-slate-950 dark:text-white mb-2">{title}</h3>
+      <p className="text-slate-500 dark:text-white/60 max-w-sm mb-6 text-sm">
         {description}
       </p>
       <button
         type="button"
         onClick={onResetFilters}
-        className="h-10 px-5 rounded-full bg-white text-black font-semibold text-xs tracking-wider uppercase transition-all hover:bg-white/90 shadow-sm hover:scale-[1.02]"
+        className="h-10 px-5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-black font-semibold text-xs tracking-wider uppercase transition-all hover:bg-black dark:hover:bg-white/90 shadow-xs hover:scale-[1.02]"
       >
         {actionText}
       </button>

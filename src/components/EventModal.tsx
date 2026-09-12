@@ -25,7 +25,6 @@ export const EventModal: React.FC<EventModalProps> = ({
   useEffect(() => {
     if (initialEvent) {
       setName(initialEvent.name);
-      // Format to YYYY-MM-DDTHH:mm for datetime-local
       const d = new Date(initialEvent.targetDate);
       const tzOffset = d.getTimezoneOffset() * 60000;
       const localISOTime = new Date(d.getTime() - tzOffset).toISOString().slice(0, 16);
@@ -35,7 +34,6 @@ export const EventModal: React.FC<EventModalProps> = ({
       setImageUrl(initialEvent.imageUrl);
     } else {
       setName('');
-      // Default to 30 days in future
       const future = new Date(Date.now() + 30 * 24 * 3600 * 1000);
       const tzOffset = future.getTimezoneOffset() * 60000;
       const localISOTime = new Date(future.getTime() - tzOffset).toISOString().slice(0, 16);
@@ -78,31 +76,31 @@ export const EventModal: React.FC<EventModalProps> = ({
   const categories: Category[] = ['trips', 'work', 'birthdays', 'health', 'milestones'];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-all">
-      <div className="relative w-full max-w-lg rounded-3xl bg-[#141416] dark:bg-[#141416] bg-white border border-white/15 dark:border-white/15 border-black/10 shadow-2xl overflow-hidden p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md transition-all">
+      <div className="relative w-full max-w-lg rounded-3xl bg-white dark:bg-[#141416] border border-slate-200/80 dark:border-white/15 shadow-2xl overflow-hidden p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10 dark:border-white/10 border-black/10">
+        <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100 dark:border-white/10">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-accent-indigo text-white flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-accent-indigo text-white flex items-center justify-center shadow-xs">
               <span className="material-symbols-outlined text-[18px]">
                 {initialEvent ? 'edit' : 'add_alarm'}
               </span>
             </div>
-            <h2 className="text-xl font-bold text-white dark:text-white text-black">
+            <h2 className="text-xl font-bold text-slate-950 dark:text-white">
               {initialEvent ? 'Edit Countdown' : 'New Countdown'}
             </h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/10 dark:bg-white/10 bg-black/5 flex items-center justify-center text-white/70 dark:text-white/70 text-black/70 hover:text-white dark:hover:text-white hover:text-black transition-colors"
+            className="w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center text-slate-600 dark:text-white/70 hover:bg-slate-200 dark:hover:bg-white/20 transition-colors"
           >
             <span className="material-symbols-outlined text-[18px]">close</span>
           </button>
         </div>
 
         {error && (
-          <div className="mb-4 px-3.5 py-2 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-medium">
+          <div className="mb-4 px-3.5 py-2 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-medium">
             {error}
           </div>
         )}
@@ -110,7 +108,7 @@ export const EventModal: React.FC<EventModalProps> = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Title */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-[#8e8e93] mb-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[#8e8e93] mb-1.5">
               Event Title
             </label>
             <input
@@ -118,26 +116,26 @@ export const EventModal: React.FC<EventModalProps> = ({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Summer Vacation in Tokyo"
-              className="w-full h-11 px-4 rounded-xl bg-black/30 dark:bg-black/30 bg-black/5 border border-white/10 dark:border-white/10 border-black/10 text-white dark:text-white text-black placeholder:text-white/30 dark:placeholder:text-white/30 placeholder:text-black/30 text-sm focus:outline-none focus:border-accent-indigo transition-colors"
+              className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/30 text-sm focus:outline-none focus:border-accent-indigo shadow-xs transition-colors"
             />
           </div>
 
           {/* Date & Time */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-[#8e8e93] mb-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[#8e8e93] mb-1.5">
               Target Date & Time
             </label>
             <input
               type="datetime-local"
               value={targetDate}
               onChange={(e) => setTargetDate(e.target.value)}
-              className="w-full h-11 px-4 rounded-xl bg-black/30 dark:bg-black/30 bg-black/5 border border-white/10 dark:border-white/10 border-black/10 text-white dark:text-white text-black text-sm focus:outline-none focus:border-accent-indigo transition-colors"
+              className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-accent-indigo shadow-xs transition-colors"
             />
           </div>
 
           {/* Category Chips */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-[#8e8e93] mb-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[#8e8e93] mb-1.5">
               Category
             </label>
             <div className="flex flex-wrap gap-2">
@@ -151,8 +149,8 @@ export const EventModal: React.FC<EventModalProps> = ({
                     onClick={() => setCategory(cat)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
                       isSel
-                        ? 'bg-accent-indigo text-white shadow-sm'
-                        : 'bg-black/30 dark:bg-black/30 bg-black/5 text-white/70 dark:text-white/70 text-black/70 hover:bg-black/40 border border-white/10 dark:border-white/10 border-black/10'
+                        ? 'bg-accent-indigo text-white shadow-xs'
+                        : 'bg-slate-100 dark:bg-black/30 text-slate-700 dark:text-white/70 hover:bg-slate-200 dark:hover:bg-black/50 border border-slate-200/80 dark:border-white/10'
                     }`}
                   >
                     <span className="material-symbols-outlined text-[15px]">{meta.icon}</span>
@@ -165,7 +163,7 @@ export const EventModal: React.FC<EventModalProps> = ({
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-[#8e8e93] mb-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[#8e8e93] mb-1.5">
               Description (Optional)
             </label>
             <textarea
@@ -173,13 +171,13 @@ export const EventModal: React.FC<EventModalProps> = ({
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
               placeholder="Add personal notes or milestones..."
-              className="w-full p-3 rounded-xl bg-black/30 dark:bg-black/30 bg-black/5 border border-white/10 dark:border-white/10 border-black/10 text-white dark:text-white text-black placeholder:text-white/30 dark:placeholder:text-white/30 placeholder:text-black/30 text-sm focus:outline-none focus:border-accent-indigo transition-colors resize-none"
+              className="w-full p-3 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/30 text-sm focus:outline-none focus:border-accent-indigo shadow-xs transition-colors resize-none"
             />
           </div>
 
           {/* Image Presets */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-[#8e8e93] mb-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[#8e8e93] mb-1.5">
               Background Aesthetic
             </label>
             <div className="grid grid-cols-3 gap-2 mb-2">
@@ -191,11 +189,13 @@ export const EventModal: React.FC<EventModalProps> = ({
                     type="button"
                     onClick={() => setImageUrl(preset.url)}
                     className={`relative h-14 rounded-lg overflow-hidden border transition-all ${
-                      isSel ? 'border-accent-indigo ring-2 ring-accent-indigo/50' : 'border-white/10 opacity-70 hover:opacity-100'
+                      isSel
+                        ? 'border-accent-indigo ring-2 ring-accent-indigo/50'
+                        : 'border-slate-200 dark:border-white/10 opacity-75 hover:opacity-100'
                     }`}
                   >
                     <img src={preset.url} alt={preset.label} className="w-full h-full object-cover" />
-                    <span className="absolute inset-x-0 bottom-0 bg-black/70 text-[9px] text-white py-0.5 truncate px-1">
+                    <span className="absolute inset-x-0 bottom-0 bg-black/70 text-[9px] text-white py-0.5 truncate px-1 text-center font-medium">
                       {preset.label}
                     </span>
                   </button>
@@ -205,17 +205,17 @@ export const EventModal: React.FC<EventModalProps> = ({
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10 dark:border-white/10 border-black/10">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-white/10">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2 rounded-full text-xs font-medium text-white/70 dark:text-white/70 text-black/70 hover:text-white dark:hover:text-white hover:text-black hover:bg-white/5 transition-colors"
+              className="px-5 py-2 rounded-full text-xs font-medium text-slate-600 dark:text-white/70 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 rounded-full bg-accent-indigo hover:bg-accent-indigo/90 text-white font-semibold text-xs tracking-wider uppercase transition-all shadow-lg hover:shadow-indigo-500/25"
+              className="px-6 py-2 rounded-full bg-accent-indigo hover:bg-accent-indigo/90 text-white font-semibold text-xs tracking-wider uppercase transition-all shadow-md hover:shadow-indigo-500/25 active:scale-95"
             >
               {initialEvent ? 'Save Changes' : 'Create Moment'}
             </button>

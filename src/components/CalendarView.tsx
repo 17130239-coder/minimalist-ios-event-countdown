@@ -31,11 +31,11 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
       {Object.entries(grouped).map(([monthYear, monthEvents]) => (
         <div key={monthYear} className="space-y-4">
           <div className="flex items-center gap-3">
-            <h3 className="text-xl font-bold tracking-tight text-white dark:text-white text-black">
+            <h3 className="text-xl font-bold tracking-tight text-slate-950 dark:text-white">
               {monthYear}
             </h3>
-            <div className="h-px flex-1 bg-white/10 dark:bg-white/10 bg-black/10" />
-            <span className="text-xs font-semibold text-[#8e8e93] px-2.5 py-0.5 rounded-full bg-white/5 dark:bg-white/5 bg-black/5">
+            <div className="h-px flex-1 bg-slate-200/80 dark:bg-white/10" />
+            <span className="text-xs font-semibold text-slate-600 dark:text-[#8e8e93] px-2.5 py-0.5 rounded-full bg-slate-200/60 dark:bg-white/10">
               {monthEvents.length} {monthEvents.length === 1 ? 'event' : 'events'}
             </span>
           </div>
@@ -51,36 +51,36 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                 <div
                   key={evt.id}
                   onClick={() => onSelectEvent(evt)}
-                  className="p-4 rounded-2xl bg-[#141416] dark:bg-[#141416] bg-black/5 border border-white/10 dark:border-white/10 border-black/10 hover:border-accent-indigo/50 hover:bg-[#1a1a1e] transition-all cursor-pointer flex items-center justify-between group"
+                  className="p-4 rounded-2xl bg-white dark:bg-[#141416] border border-slate-200/80 dark:border-white/10 hover:border-accent-indigo/50 hover:shadow-md transition-all cursor-pointer flex items-center justify-between group shadow-xs"
                 >
                   <div className="flex items-center gap-4">
                     {/* Date badge */}
-                    <div className="w-12 h-12 rounded-xl bg-white/10 dark:bg-white/10 bg-black/5 flex flex-col items-center justify-center border border-white/15 dark:border-white/15 border-black/10 shrink-0">
-                      <span className="text-[10px] uppercase font-bold text-accent-sky">
+                    <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-white/10 flex flex-col items-center justify-center border border-slate-200/70 dark:border-white/15 shrink-0 shadow-xs">
+                      <span className="text-[10px] uppercase font-bold text-accent-indigo dark:text-accent-sky">
                         {weekday}
                       </span>
-                      <span className="text-lg font-bold font-mono text-white dark:text-white text-black">
+                      <span className="text-lg font-bold font-mono text-slate-950 dark:text-white">
                         {day}
                       </span>
                     </div>
 
                     <div>
                       <div className="flex items-center gap-1.5 mb-0.5">
-                        <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-white/10 dark:bg-white/10 bg-black/5 text-[#8e8e93]">
+                        <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-[#8e8e93]">
                           {catMeta.label}
                         </span>
                       </div>
-                      <h4 className="text-base font-bold text-white dark:text-white text-black group-hover:text-accent-indigo transition-colors line-clamp-1">
+                      <h4 className="text-base font-bold text-slate-950 dark:text-white group-hover:text-accent-indigo transition-colors line-clamp-1">
                         {evt.name}
                       </h4>
-                      <p className="text-xs text-[#8e8e93] mt-0.5">
+                      <p className="text-xs text-slate-500 dark:text-[#8e8e93] mt-0.5">
                         {formatDateFull(evt.targetDate)}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="w-7 h-7 rounded-full bg-white/5 dark:bg-white/5 bg-black/5 flex items-center justify-center text-white/50 group-hover:bg-accent-indigo group-hover:text-white transition-all shrink-0">
+                    <span className="w-7 h-7 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-white/50 group-hover:bg-accent-indigo group-hover:text-white transition-all shrink-0">
                       <span className="material-symbols-outlined text-[14px]">north_east</span>
                     </span>
                   </div>
