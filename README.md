@@ -2,6 +2,9 @@
 
 > A refined personal event countdown web application with an authentic iOS 18+ Apple Native Modern Glass design system, interactive spotlight backgrounds, and live tabular digit countdowns. Inspired by the Stitch design **"Minimalist iOS Event Countdown"**.
 
+🌐 **Live Demo**: [https://17130239-coder.github.io/minimalist-ios-event-countdown/](https://17130239-coder.github.io/minimalist-ios-event-countdown/)  
+📦 **Repository**: [https://github.com/17130239-coder/minimalist-ios-event-countdown](https://github.com/17130239-coder/minimalist-ios-event-countdown)
+
 ![Countdown App Preview](https://lh3.googleusercontent.com/aida/AEtjO1XSphhcTYnIt11Slvb6tQSV4mB3jKg2NfIlSaJ1bJdWhunKYz6n_VJL3cTeAJg4F3LxTb84flnCk6SORb0G4sksGFY-W-Xr4LrRFgOrLhB1sYxJxbeo84FgU1jLlVa_g_eizzmxqVTbwsIEViY4mroLycedEsNB1FupcAV7jqPtH6AS0v-ZO7GcgU0er2pYNnItkiyBDty5p2owZ_O_YTi2_aXUuP2BRK1iTDeR-dsiJBeszrw-XwBqEQ)
 
 ---
