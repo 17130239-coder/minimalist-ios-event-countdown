@@ -74,102 +74,58 @@ export const EventCard: React.FC<EventCardProps> = ({
     );
   }
 
-  // Gallery Grid Card (Pure iOS 18 Light Mode Layout)
+  // Gallery Card (Exact Stitch Screen 1 Design)
   return (
     <article
       onClick={() => onSelect(event)}
-      className="gallery-card relative rounded-3xl overflow-hidden cursor-pointer group border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#141416] p-4 sm:p-5 shadow-[0_4px_24px_rgba(0,0,0,0.06)] dark:shadow-2xl flex flex-col justify-between transition-all duration-300 hover:shadow-[0_12px_32px_rgba(0,0,0,0.12)] hover:-translate-y-1"
+      className="event-card gallery-card relative min-h-[380px] rounded-3xl overflow-hidden cursor-pointer group border border-slate-200/80 dark:border-white/10 bg-[#141416] flex flex-col justify-between p-6 shadow-lg hover:shadow-2xl transition-all duration-300"
     >
-      {/* Top Media Banner */}
-      <div className="relative w-full h-44 rounded-2xl overflow-hidden mb-3.5 bg-slate-100 dark:bg-black/40 shadow-inner">
-        <img
-          src={event.imageUrl}
-          alt={event.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-          loading="lazy"
-        />
+      {/* Full-bleed background photo - natural bright colors, not dark grayscale */}
+      <img
+        src={event.imageUrl}
+        alt={event.name}
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 opacity-90 dark:opacity-75"
+        loading="lazy"
+      />
+      {/* Subtle bottom gradient to ensure bold white title is crisp while keeping photo bright */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />
 
-        {/* Top Badges */}
-        <div className="absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-black/70 backdrop-blur-md text-slate-800 dark:text-white shadow-xs border border-white/20">
-          <span className="material-symbols-outlined text-[14px] text-accent-indigo dark:text-indigo-300">
-            {catMeta.icon}
-          </span>
-          <span className="text-[11px] font-semibold uppercase tracking-wider">
-            {catMeta.label}
-          </span>
-        </div>
-
-        <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/95 dark:bg-black/70 backdrop-blur-md flex items-center justify-center text-slate-700 dark:text-white shadow-xs group-hover:bg-[#007AFF] group-hover:text-white transition-colors border border-white/20">
+      {/* Top Bar: Category Pill & North-East Arrow (Stitch Spec) */}
+      <div className="relative z-10 flex items-center justify-between">
+        <span className="text-[11px] font-semibold uppercase tracking-wider px-3 py-1 rounded-full bg-black/40 backdrop-blur-md text-white border border-white/20 flex items-center gap-1.5 shadow-sm">
+          <span className="material-symbols-outlined text-[14px]">{catMeta.icon}</span>
+          {catMeta.label}
+        </span>
+        <span className="w-8 h-8 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-white/90 group-hover:bg-white group-hover:text-black transition-all shadow-sm">
           <span className="material-symbols-outlined text-[16px]">north_east</span>
-        </div>
+        </span>
       </div>
 
-      {/* Event Title & Date on Crisp White Background */}
-      <div className="mb-3 px-0.5">
-        <h2 className="text-xl font-bold tracking-tight text-slate-950 dark:text-white truncate group-hover:text-accent-indigo transition-colors mb-1">
+      {/* Bottom Area: Title + Horizontal Countdown Capsule Bar (Exact Stitch Spec) */}
+      <div className="relative z-10 flex flex-col gap-3.5 mt-auto">
+        <h2 className="text-2xl font-bold text-white tracking-tight drop-shadow-sm">
           {event.name}
         </h2>
-        <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 text-xs font-medium">
-          <span className="material-symbols-outlined text-[15px] text-slate-400">calendar_today</span>
-          <span>{formatDateShort(event.targetDate)}</span>
-          {event.description && (
-            <>
-              <span className="inline-block w-1 h-1 rounded-full bg-slate-300 mx-0.5" />
-              <span className="truncate max-w-[160px]">{event.description}</span>
-            </>
-          )}
-        </div>
-      </div>
 
-      {/* 4-Box Digital Countdown Segment matching Stitch light mode */}
-      <div className="grid grid-cols-4 gap-2 text-center my-1">
-        <div className="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/70 dark:border-white/5 shadow-xs">
-          <span className="font-mono text-xl sm:text-2xl font-bold text-slate-950 dark:text-white tracking-tight">
-            {timeLeft.days}
-          </span>
-          <span className="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-white/40 uppercase tracking-widest mt-0.5">
-            DAYS
-          </span>
-        </div>
+        {/* Horizontal Capsule Bar with crisp contrast */}
+        <div className="flex items-center justify-between bg-white/95 dark:bg-black/85 backdrop-blur-xl border border-white/40 dark:border-white/15 px-3.5 py-2.5 rounded-2xl shadow-xl">
+          <div className="flex items-center gap-1.5 w-full justify-between">
+            <RollerDigit
+              value={timeLeft.days}
+              unitLabel="D"
+              widthClass={parseInt(timeLeft.days, 10) > 99 ? 'min-w-[38px]' : 'min-w-[34px]'}
+            />
+            <span className="text-slate-400 dark:text-white/30 font-bold text-sm select-none">:</span>
 
-        <div className="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/70 dark:border-white/5 shadow-xs">
-          <span className="font-mono text-xl sm:text-2xl font-bold text-slate-950 dark:text-white tracking-tight">
-            {timeLeft.hours}
-          </span>
-          <span className="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-white/40 uppercase tracking-widest mt-0.5">
-            HRS
-          </span>
-        </div>
+            <RollerDigit value={timeLeft.hours} unitLabel="H" widthClass="min-w-[30px]" />
+            <span className="text-slate-400 dark:text-white/30 font-bold text-sm select-none">:</span>
 
-        <div className="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/70 dark:border-white/5 shadow-xs">
-          <span className="font-mono text-xl sm:text-2xl font-bold text-slate-950 dark:text-white tracking-tight">
-            {timeLeft.minutes}
-          </span>
-          <span className="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-white/40 uppercase tracking-widest mt-0.5">
-            MINS
-          </span>
-        </div>
+            <RollerDigit value={timeLeft.minutes} unitLabel="M" widthClass="min-w-[30px]" />
+            <span className="text-slate-400 dark:text-white/30 font-bold text-sm select-none">:</span>
 
-        <div className="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl bg-blue-50 dark:bg-[#007AFF]/15 border border-blue-100 dark:border-[#007AFF]/20 text-[#007AFF] dark:text-[#38BDF8] relative overflow-hidden shadow-xs">
-          <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping opacity-75" />
-          <span className="font-mono text-xl sm:text-2xl font-bold tracking-tight">
-            {timeLeft.seconds}
-          </span>
-          <span className="text-[9px] sm:text-[10px] font-semibold text-[#007AFF]/80 dark:text-[#38BDF8]/80 uppercase tracking-widest mt-0.5">
-            SECS
-          </span>
+            <RollerDigit value={timeLeft.seconds} unitLabel="S" widthClass="min-w-[30px]" isAccent={true} />
+          </div>
         </div>
-      </div>
-
-      {/* Footer metadata */}
-      <div className="flex items-center justify-between pt-3 px-0.5 text-slate-500 dark:text-white/50 text-xs border-t border-slate-100 dark:border-white/5 mt-2">
-        <span className="flex items-center gap-1 text-[11px] font-medium text-slate-600 dark:text-slate-300">
-          <span className="material-symbols-outlined text-[15px] text-[#007AFF]">timelapse</span>
-          <span>Active Countdown</span>
-        </span>
-        <span className="text-[11px] font-semibold text-[#007AFF] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
-          View details <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
-        </span>
       </div>
     </article>
   );

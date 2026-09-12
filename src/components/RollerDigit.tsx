@@ -20,7 +20,7 @@ export const RollerDigit: React.FC<RollerDigitProps> = ({
 
   const textStyle = isAccent
     ? 'text-[#007AFF] dark:text-[#38BDF8]'
-    : 'text-slate-900 dark:text-white';
+    : 'text-slate-950 dark:text-white';
 
   useEffect(() => {
     if (value !== prevValRef.current) {
@@ -41,7 +41,7 @@ export const RollerDigit: React.FC<RollerDigitProps> = ({
   return (
     <div className="flex items-center gap-1.5">
       <div
-        className={`digit-capsule px-2 py-1 rounded-lg border border-slate-200/80 dark:border-white/10 bg-white/90 dark:bg-black/60 shadow-xs flex items-center justify-center ${widthClass}`}
+        className={`px-2 py-1 rounded-lg border border-slate-200/80 dark:border-white/10 bg-slate-100/90 dark:bg-white/10 shadow-xs flex items-center justify-center ${widthClass}`}
       >
         <div className={`roller-wrapper font-mono text-[16px] font-bold ${textStyle} tabular-nums`}>
           {prevVal !== null && animating && (
@@ -58,7 +58,7 @@ export const RollerDigit: React.FC<RollerDigitProps> = ({
           </div>
         </div>
       </div>
-      <span className="text-[10px] font-mono text-slate-500 dark:text-white/50 uppercase font-semibold select-none">
+      <span className="text-[10px] font-mono text-slate-600 dark:text-white/60 uppercase font-semibold select-none">
         {unitLabel}
       </span>
     </div>
