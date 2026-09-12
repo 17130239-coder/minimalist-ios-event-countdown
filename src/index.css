@@ -1,0 +1,179 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #0e0e10;
+    color: #e5e1e4;
+  }
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+html:not(.dark) body {
+  background-color: #f8fafc;
+  color: #1a1a1f;
+}
+
+/* Interactive Ambient Dot Grid & Spotlight Glow */
+.dot-grid {
+  background-size: 24px 24px;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+}
+.spotlight-layer {
+  background: radial-gradient(750px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.07), transparent 75%);
+  pointer-events: none;
+}
+.dot-glow-layer {
+  background-size: 24px 24px;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.45) 1.2px, transparent 1.2px);
+  -webkit-mask-image: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 100%);
+  mask-image: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Light theme overrides for ambient background */
+html:not(.dark) .dot-grid {
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+}
+html:not(.dark) .spotlight-layer {
+  background: radial-gradient(750px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 0, 0, 0.03), transparent 75%);
+}
+html:not(.dark) .dot-glow-layer {
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.22) 1.2px, transparent 1.2px);
+}
+
+/* Card hover styling matching Stitch Screen 1 */
+.gallery-card {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+}
+.gallery-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), 0 0 30px -5px rgba(255, 255, 255, 0.06);
+}
+
+/* Pill digit capsule without slit or middle line */
+.digit-capsule {
+  position: relative;
+  background: rgba(18, 18, 20, 0.85);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+html:not(.dark) .digit-capsule {
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Ultra-smooth slide-up digit roll animation */
+.roller-wrapper {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  height: 1.35em;
+  line-height: 1.35em;
+  vertical-align: middle;
+}
+.roller-item {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  transition: transform 550ms cubic-bezier(0.16, 1, 0.3, 1), opacity 550ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.roller-item.slide-out {
+  transform: translate3d(0, -100%, 0);
+  opacity: 0;
+}
+.roller-item.slide-in-init {
+  transform: translate3d(0, 100%, 0);
+  opacity: 0;
+}
+.roller-item.slide-in-active {
+  transform: translate3d(0, 0%, 0);
+  opacity: 1;
+}
+
+/* Seamless digit tile card - Apple subtle dark elevation (Stitch Screen 2) */
+.flip-tile {
+  position: relative;
+  background: linear-gradient(180deg, #18181c 0%, #121215 100%);
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.10),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.6),
+    0 14px 35px -6px rgba(0, 0, 0, 0.7),
+    0 4px 12px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  contain: paint;
+}
+
+html:not(.dark) .flip-tile {
+  background: linear-gradient(180deg, #ffffff 0%, #f3f3f6 100%);
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.9),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.05),
+    0 14px 35px -6px rgba(0, 0, 0, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Absolutely no horizontal line or split seam */
+.flip-tile::after, .flip-tile::before {
+  display: none !important;
+}
+
+/* Container for animated sliding digits */
+.digit-container {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  perspective: 1000px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ultra-smooth GPU accelerated slide & fade transitions (Apple iOS spring/bezier) */
+.digit-value {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1), opacity 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.digit-value.is-current {
+  transform: translate3d(0, 0%, 0);
+  opacity: 1;
+  z-index: 2;
+}
+
+.digit-value.is-entering {
+  transform: translate3d(0, 100%, 0);
+  opacity: 0;
+  z-index: 3;
+}
+
+.digit-value.is-exiting {
+  transform: translate3d(0, -100%, 0);
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+}
