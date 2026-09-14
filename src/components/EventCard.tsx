@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CountdownEvent, ViewMode, TimeRemaining } from '../types';
 import { calculateTimeRemaining } from '../utils/time';
 import { RollerDigit } from './RollerDigit';
+import { useI18n } from '../i18n/I18nContext';
 
 interface EventCardProps {
   event: CountdownEvent;
@@ -14,6 +15,9 @@ export const EventCard: React.FC<EventCardProps> = ({
   viewMode,
   onSelect,
 }) => {
+  const { t, getEventDetails } = useI18n();
+  const eventDetails = getEventDetails(event.id, event.name, event.description);
+
   const [timeLeft, setTimeLeft] = useState<TimeRemaining>(() =>
     calculateTimeRemaining(event.targetDate)
   );
@@ -37,7 +41,7 @@ export const EventCard: React.FC<EventCardProps> = ({
       >
         <img
           src={event.imageUrl}
-          alt={event.name}
+          alt={eventDetails.name}
           className="absolute inset-0 w-full h-full object-cover saturate-[1.15] brightness-[1.05] opacity-90"
           loading="lazy"
         />
@@ -45,11 +49,11 @@ export const EventCard: React.FC<EventCardProps> = ({
 
         <div className="relative z-10 flex flex-col justify-center gap-1 min-h-[2.5rem]">
           <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight line-clamp-1 leading-tight drop-shadow-sm">
-            {event.name}
+            {eventDetails.name}
           </h2>
-          {event.description && (
+          {eventDetails.description && (
             <p className="text-xs text-white/75 line-clamp-1 max-w-md drop-shadow-sm">
-              {event.description}
+              {eventDetails.description}
             </p>
           )}
         </div>
@@ -57,13 +61,13 @@ export const EventCard: React.FC<EventCardProps> = ({
         <div className="relative z-10 flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
           <div className="flex items-center justify-between bg-black/85 backdrop-blur-xl border border-white/15 px-3.5 py-2.5 rounded-2xl shadow-2xl">
             <div className="flex items-center gap-1.5">
-              <RollerDigit value={timeLeft.days} unitLabel="D" widthClass={daysWidth} />
+              <RollerDigit value={timeLeft.days} unitLabel={t.daysShort} widthClass={daysWidth} />
               <span className="text-white/30 font-bold text-sm select-none">:</span>
-              <RollerDigit value={timeLeft.hours} unitLabel="H" widthClass="min-w-[34px]" />
+              <RollerDigit value={timeLeft.hours} unitLabel={t.hoursShort} widthClass="min-w-[34px]" />
               <span className="text-white/30 font-bold text-sm select-none">:</span>
-              <RollerDigit value={timeLeft.minutes} unitLabel="M" widthClass="min-w-[34px]" />
+              <RollerDigit value={timeLeft.minutes} unitLabel={t.minsShort} widthClass="min-w-[34px]" />
               <span className="text-white/30 font-bold text-sm select-none">:</span>
-              <RollerDigit value={timeLeft.seconds} unitLabel="S" widthClass="min-w-[34px]" />
+              <RollerDigit value={timeLeft.seconds} unitLabel={t.secsShort} widthClass="min-w-[34px]" />
             </div>
           </div>
 
@@ -75,7 +79,7 @@ export const EventCard: React.FC<EventCardProps> = ({
     );
   }
 
-  // Gallery Card (Exact 1:1 match with Stitch Countdown - Gallery (Fixed & Running))
+  // Gallery Card
   return (
     <article
       onClick={() => onSelect(event)}
@@ -83,7 +87,7 @@ export const EventCard: React.FC<EventCardProps> = ({
     >
       <img
         src={event.imageUrl}
-        alt={event.name}
+        alt={eventDetails.name}
         className="absolute inset-0 w-full h-full object-cover saturate-[1.15] brightness-[1.05] opacity-90"
         loading="lazy"
       />
@@ -101,7 +105,7 @@ export const EventCard: React.FC<EventCardProps> = ({
         <div className="flex flex-col gap-3.5 mt-auto">
           <div className="min-h-[3.75rem] flex items-end">
             <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight line-clamp-2 leading-tight">
-              {event.name}
+              {eventDetails.name}
             </h2>
           </div>
 
@@ -109,28 +113,28 @@ export const EventCard: React.FC<EventCardProps> = ({
             <div className="flex items-center gap-1.5 w-full justify-between">
               <RollerDigit
                 value={timeLeft.days}
-                unitLabel="D"
+                unitLabel={t.daysShort}
                 widthClass={daysWidth}
               />
               <span className="text-white/30 font-bold text-sm select-none">:</span>
 
               <RollerDigit
                 value={timeLeft.hours}
-                unitLabel="H"
+                unitLabel={t.hoursShort}
                 widthClass="min-w-[34px]"
               />
               <span className="text-white/30 font-bold text-sm select-none">:</span>
 
               <RollerDigit
                 value={timeLeft.minutes}
-                unitLabel="M"
+                unitLabel={t.minsShort}
                 widthClass="min-w-[34px]"
               />
               <span className="text-white/30 font-bold text-sm select-none">:</span>
 
               <RollerDigit
                 value={timeLeft.seconds}
-                unitLabel="S"
+                unitLabel={t.secsShort}
                 widthClass="min-w-[34px]"
               />
             </div>

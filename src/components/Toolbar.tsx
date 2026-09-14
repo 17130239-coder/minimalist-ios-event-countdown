@@ -1,5 +1,6 @@
 import React, { useRef, useState, useLayoutEffect, useEffect } from 'react';
 import { ViewMode, SortOrder } from '../types';
+import { useI18n } from '../i18n/I18nContext';
 
 interface ToolbarProps {
   searchQuery: string;
@@ -18,6 +19,8 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   sortOrder,
   onToggleSort,
 }) => {
+  const { t } = useI18n();
+
   const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({
     left: 0,
     width: 0,
@@ -36,17 +39,21 @@ export const Toolbar: React.FC<ToolbarProps> = ({
 
   useLayoutEffect(() => {
     updateIndicator();
-  }, [viewMode]);
+  }, [viewMode, t.langCode]);
 
   useEffect(() => {
     window.addEventListener('resize', updateIndicator);
-    return () => window.removeEventListener('resize', updateIndicator);
-  }, [viewMode]);
+    const timer = setTimeout(updateIndicator, 50);
+    return () => {
+      window.removeEventListener('resize', updateIndicator);
+      clearTimeout(timer);
+    };
+  }, [viewMode, t.langCode]);
 
   return (
-    <section className="flex flex-col lg:flex-row items-center justify-between gap-4 pt-6 pb-8">
-      {/* Search Input Box (Exact Stitch Spec) */}
-      <div className="relative w-full lg:w-72 group">
+    <section className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 sm:pt-6 pb-6 sm:pb-8">
+      {/* Search Input Box */}
+      <div className="relative w-full sm:w-72 group">
         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-white/40 group-focus-within:text-slate-800 dark:group-focus-within:text-white transition-colors">
           <span className="material-symbols-outlined text-[18px]">search</span>
         </div>
@@ -54,7 +61,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           type="text"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Search countdowns..."
+          placeholder={t.searchPlaceholder}
           className="w-full h-10 pl-9 pr-8 rounded-full bg-white/80 dark:bg-[#18181b] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/40 text-sm border border-black/10 dark:border-white/10 focus:outline-none focus:border-black/30 dark:focus:border-white/40 shadow-xs transition-colors"
         />
         {searchQuery && (
@@ -68,11 +75,14 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         )}
       </div>
 
-      {/* Categories & View Controls Container (Exact Stitch Spec: View switcher & Soonest sort button) */}
-      <div className="flex items-center justify-between w-full lg:w-auto gap-3 overflow-x-auto">
+      {/* View Controls & Sort Button */}
+      <div className="flex items-center justify-between w-full sm:w-auto gap-3 overflow-x-auto">
         <div className="flex items-center gap-2.5">
-          {/* View switcher segmented control with animated sliding indicator */}
-          <div className="relative flex items-center p-1 bg-black/[0.05] dark:bg-[#18181b] rounded-full border border-black/5 dark:border-white/10 transition-colors" id="viewSwitcher">
+          {/* View switcher segmented control */}
+          <div
+            className="relative flex items-center p-1 bg-black/[0.05] dark:bg-[#18181b] rounded-full border border-black/5 dark:border-white/10 transition-colors"
+            id="viewSwitcher"
+          >
             {/* Animated Sliding Background Indicator */}
             {indicatorStyle.width > 0 && (
               <div
@@ -98,7 +108,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
               }`}
             >
               <span className="material-symbols-outlined text-[16px]">grid_view</span>
-              <span>Gallery</span>
+              <span>{t.gallery}</span>
             </button>
             <button
               ref={(el) => {
@@ -114,22 +124,26 @@ export const Toolbar: React.FC<ToolbarProps> = ({
               }`}
             >
               <span className="material-symbols-outlined text-[16px]">view_list</span>
-              <span>List</span>
+              <span>{t.list}</span>
             </button>
           </div>
 
-          {/* Sort button with animated flipping icon and fixed text container */}
+          {/* Sort button */}
           <button
             type="button"
             onClick={onToggleSort}
             id="sortToggleBtn"
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/80 hover:bg-white dark:bg-[#18181b] dark:hover:bg-[#232326] text-slate-800 hover:text-black dark:text-white/80 dark:hover:text-white font-medium text-xs border border-black/10 dark:border-white/10 shadow-xs transition-colors whitespace-nowrap"
+            className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/80 hover:bg-white dark:bg-[#18181b] dark:hover:bg-[#232326] text-slate-800 hover:text-black dark:text-white/80 dark:hover:text-white font-medium text-xs border border-black/10 dark:border-white/10 shadow-xs transition-colors whitespace-nowrap active:scale-95"
           >
-            <span className={`material-symbols-outlined text-[16px] transition-transform duration-300 ${sortOrder === 'latest' ? 'rotate-180' : ''}`}>
+            <span
+              className={`material-symbols-outlined text-[16px] transition-transform duration-300 ${
+                sortOrder === 'latest' ? 'rotate-180' : ''
+              }`}
+            >
               swap_vert
             </span>
-            <span className="inline-block w-[3.8rem] text-left capitalize">
-              {sortOrder === 'soonest' ? 'Soonest' : 'Latest'}
+            <span className="inline-block min-w-[3.5rem] text-left">
+              {sortOrder === 'soonest' ? t.soonest : t.latest}
             </span>
           </button>
         </div>

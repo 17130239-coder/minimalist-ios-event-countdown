@@ -15,6 +15,7 @@ export interface CountdownEvent {
 export type ViewMode = 'gallery' | 'list';
 export type TabMode = 'upcoming' | 'archive' | 'calendar';
 export type SortOrder = 'soonest' | 'latest';
+export type Language = 'en' | 'vi';
 
 export interface TimeRemaining {
   days: string;

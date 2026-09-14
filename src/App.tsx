@@ -8,8 +8,11 @@ import { EventCard } from './components/EventCard';
 import { CountdownDetail } from './components/CountdownDetail';
 import { EmptyState } from './components/EmptyState';
 import { CalendarView } from './components/CalendarView';
+import { I18nProvider, useI18n } from './i18n/I18nContext';
 
-export const App: React.FC = () => {
+const MainApp: React.FC = () => {
+  const { t, getEventDetails } = useI18n();
+
   // Theme state - defaults to dark, persists to localStorage
   const [isDark, setIsDark] = useState<boolean>(() => {
     try {
@@ -89,7 +92,7 @@ export const App: React.FC = () => {
     }
   };
 
-  // Filtered & Sorted Events
+  // Filtered & Sorted Events (Bilingual search support)
   const filteredEvents = useMemo(() => {
     const list = events.filter((evt) => {
       if (currentTab === 'upcoming' && evt.isArchived) return false;
@@ -97,7 +100,15 @@ export const App: React.FC = () => {
 
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        return evt.name.toLowerCase().includes(q) || (evt.description && evt.description.toLowerCase().includes(q));
+        const details = getEventDetails(evt.id, evt.name, evt.description);
+        const matchesEn =
+          evt.name.toLowerCase().includes(q) ||
+          (evt.description && evt.description.toLowerCase().includes(q));
+        const matchesLocalized =
+          details.name.toLowerCase().includes(q) ||
+          (details.description && details.description.toLowerCase().includes(q));
+
+        return matchesEn || matchesLocalized;
       }
 
       return true;
@@ -112,14 +123,14 @@ export const App: React.FC = () => {
     }
 
     return list;
-  }, [events, currentTab, searchQuery, isSorted, sortOrder]);
+  }, [events, currentTab, searchQuery, isSorted, sortOrder, getEventDetails]);
 
   return (
     <div className="font-body antialiased selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black min-h-screen relative overflow-x-hidden bg-[#f2f2f7] dark:bg-[#0e0e10] text-[#1c1c1e] dark:text-[#e5e1e4] flex flex-col justify-between transition-colors duration-200">
       {/* Interactive Dynamic Background: Ambient Dot Grid & Spotlight Glow */}
       <SpotlightBackground />
 
-      {/* 1. Top Navigation Bar: Shown only on Gallery / List / Calendar views, matching Stitch spec */}
+      {/* 1. Top Navigation Bar: Responsive 2-row on Mobile, 1-row on Desktop */}
       {!selectedEvent && (
         <Header
           currentTab={currentTab}
@@ -132,20 +143,17 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* Main Container */}
+      {/* Main Container: Adjusted top padding for mobile 2-row header */}
       <main
         className={`relative z-10 w-full mx-auto flex-1 ${
           selectedEvent
-            ? 'max-w-5xl px-4 sm:px-6 pt-8 pb-12 flex flex-col justify-between'
-            : 'pt-20 max-w-7xl px-6 pb-28'
+            ? 'max-w-5xl px-4 sm:px-6 pt-4 sm:pt-6 pb-12 flex flex-col justify-between'
+            : 'pt-28 md:pt-20 max-w-7xl px-4 sm:px-6 pb-28'
         }`}
       >
         {selectedEvent ? (
-          /* Detail View: Exact match with Stitch Countdown - Detail (Fixed & Running) */
-          <CountdownDetail
-            event={selectedEvent}
-            onBack={handleBackToList}
-          />
+          /* Detail View */
+          <CountdownDetail event={selectedEvent} onBack={handleBackToList} />
         ) : currentTab === 'calendar' ? (
           /* Calendar View */
           <CalendarView
@@ -153,9 +161,9 @@ export const App: React.FC = () => {
             onSelectEvent={handleSelectEvent}
           />
         ) : (
-          /* Gallery & List Streams: Exact match with Stitch Countdown - Gallery (Fixed & Running) */
+          /* Gallery & List Streams */
           <>
-            {/* 2. Toolbar / Filter Section (Exact Stitch Spec) */}
+            {/* 2. Toolbar / Filter Section */}
             <Toolbar
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
@@ -165,25 +173,29 @@ export const App: React.FC = () => {
               onToggleSort={handleToggleSort}
             />
 
-            {/* 3. Event Cards Stream (Exact Stitch Spec) */}
+            {/* 3. Event Cards Stream */}
             {filteredEvents.length === 0 ? (
               <EmptyState
                 title={
                   currentTab === 'archive'
-                    ? 'No archived moments'
-                    : 'No countdown moments found'
+                    ? t.noArchivedMoments
+                    : t.noMomentsFound
                 }
                 description={
                   currentTab === 'archive'
-                    ? 'Moments you archive will appear here for safekeeping.'
-                    : 'Try clearing your search filter.'
+                    ? t.archiveSafekeepingPrompt
+                    : t.clearSearchPrompt
                 }
                 onResetFilters={() => {
                   setSearchQuery('');
                 }}
               />
             ) : viewMode === 'gallery' ? (
-              <section key="gallery" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in" id="eventsStream">
+              <section
+                key="gallery"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in"
+                id="eventsStream"
+              >
                 {filteredEvents.map((evt) => (
                   <EventCard
                     key={evt.id}
@@ -194,7 +206,11 @@ export const App: React.FC = () => {
                 ))}
               </section>
             ) : (
-              <section key="list" className="flex flex-col gap-4 animate-fade-in" id="eventsStream">
+              <section
+                key="list"
+                className="flex flex-col gap-4 animate-fade-in"
+                id="eventsStream"
+              >
                 {filteredEvents.map((evt) => (
                   <EventCard
                     key={evt.id}
@@ -209,6 +225,14 @@ export const App: React.FC = () => {
         )}
       </main>
     </div>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
+    <I18nProvider>
+      <MainApp />
+    </I18nProvider>
   );
 };
 

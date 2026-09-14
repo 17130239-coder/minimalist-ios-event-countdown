@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
 import { CountdownEvent } from '../types';
+import { useI18n } from '../i18n/I18nContext';
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -13,6 +14,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   onClose,
   event,
 }) => {
+  const { t, getEventDetails } = useI18n();
+  const eventDetails = getEventDetails(event.id, event.name, event.description);
+
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
 
@@ -69,8 +73,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${event.name} — Countdown`,
-          text: `Track countdown to ${event.name}`,
+          title: `${eventDetails.name} — ${t.brand}`,
+          text: `${t.shareTitle}: ${eventDetails.name}`,
           url: shareUrl,
         });
       } catch {
@@ -85,7 +89,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Share Countdown"
+      aria-label={t.shareTitle}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
     >
       {/* Frosted Backdrop */}
@@ -103,10 +107,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({
         <div className="w-full flex items-center justify-between mb-5">
           <div className="text-left">
             <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
-              Share Countdown
+              {t.shareTitle}
             </h3>
             <p className="text-xs text-slate-500 dark:text-[#8e8e93] line-clamp-1 max-w-[260px]">
-              {event.name}
+              {eventDetails.name}
             </p>
           </div>
 
@@ -114,7 +118,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-600 dark:text-white/70 hover:text-black dark:hover:text-white flex items-center justify-center transition-colors"
+            className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-600 dark:text-white/70 hover:text-black dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer"
           >
             <span className="material-symbols-outlined text-[18px]">close</span>
           </button>
@@ -137,7 +141,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           </div>
           <span className="text-[11px] text-slate-500 dark:text-white/50 font-medium mt-3 flex items-center gap-1">
             <span className="material-symbols-outlined text-[14px]">qr_code_scanner</span>
-            Scan with iPhone Camera to view countdown
+            {t.scanInstructions}
           </span>
         </div>
 
@@ -157,7 +161,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               id="copy-link-btn"
               type="button"
               onClick={handleCopyLink}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all shrink-0 flex items-center gap-1.5 shadow-sm ${
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all shrink-0 flex items-center gap-1.5 shadow-sm cursor-pointer ${
                 copied
                   ? 'bg-emerald-600 text-white'
                   : 'bg-black dark:bg-white text-white dark:text-black hover:opacity-90 active:scale-95'
@@ -166,7 +170,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               <span className="material-symbols-outlined text-[15px]">
                 {copied ? 'check' : 'content_copy'}
               </span>
-              <span>{copied ? 'Copied!' : 'Copy Link'}</span>
+              <span>{copied ? t.copied : t.copyLink}</span>
             </button>
           </div>
 
@@ -175,10 +179,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             <button
               type="button"
               onClick={handleNativeShare}
-              className="w-full py-2.5 rounded-full text-xs font-medium text-slate-600 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center justify-center gap-1.5"
+              className="w-full py-2.5 rounded-full text-xs font-medium text-slate-600 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <span className="material-symbols-outlined text-[16px]">ios_share</span>
-              <span>More sharing options...</span>
+              <span>{t.moreShareOptions}</span>
             </button>
           )}
         </div>
