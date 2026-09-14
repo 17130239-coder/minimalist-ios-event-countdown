@@ -21,7 +21,7 @@ export const FlipTile: React.FC<FlipTileProps> = ({ value, label }) => {
       const timer = setTimeout(() => {
         setPrevVal(null);
         setIsTransitioning(false);
-      }, 550);
+      }, 480);
 
       return () => clearTimeout(timer);
     }
@@ -29,19 +29,23 @@ export const FlipTile: React.FC<FlipTileProps> = ({ value, label }) => {
 
   return (
     <div className="flex flex-col items-center flex-1 max-w-[190px]">
-      <div className="flip-tile relative w-full aspect-[4/5] rounded-2xl sm:rounded-3xl flex items-center justify-center p-2">
+      <div className="flip-tile relative w-full aspect-[4/5] rounded-2xl sm:rounded-3xl flex items-center justify-center p-2 transition-colors">
         <div className="digit-container">
           {prevVal !== null && isTransitioning && (
-            <span className="digit-value is-exiting font-mono text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight text-white select-none">
+            <span className="digit-value is-exiting font-mono text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight text-slate-950 dark:text-white select-none">
               {prevVal}
             </span>
           )}
-          <span className="digit-value is-current font-mono text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight text-white select-none">
+          <span
+            className={`digit-value ${
+              isTransitioning ? 'is-entering' : 'is-current'
+            } font-mono text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight text-slate-950 dark:text-white select-none`}
+          >
             {currentVal}
           </span>
         </div>
       </div>
-      <span className="text-[11px] sm:text-[12px] uppercase tracking-[0.22em] text-[#8e8e93] font-semibold mt-3.5 sm:mt-4 select-none">
+      <span className="text-[11px] sm:text-[12px] uppercase tracking-[0.22em] text-slate-500 dark:text-[#8e8e93] font-semibold mt-3.5 sm:mt-4 select-none">
         {label}
       </span>
     </div>

@@ -6,10 +6,16 @@
   html, body {
     margin: 0;
     padding: 0;
-    background-color: #0e0e10;
-    color: #e5e1e4;
     font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
+  }
+  html {
+    background-color: #f2f2f7;
+    color: #1c1c1e;
+  }
+  html.dark {
+    background-color: #0e0e10;
+    color: #e5e1e4;
   }
   ::-webkit-scrollbar {
     display: none;
@@ -19,18 +25,27 @@
 /* Interactive Ambient Dot Grid & Spotlight Glow */
 .dot-grid {
   background-size: 24px 24px;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+}
+.dark .dot-grid {
   background-image: radial-gradient(circle, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
 }
 .spotlight-layer {
-  background: radial-gradient(750px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.07), transparent 75%);
+  background: radial-gradient(750px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 0, 0, 0.03), transparent 75%);
   pointer-events: none;
+}
+.dark .spotlight-layer {
+  background: radial-gradient(750px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.07), transparent 75%);
 }
 .dot-glow-layer {
   background-size: 24px 24px;
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.45) 1.2px, transparent 1.2px);
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.15) 1.2px, transparent 1.2px);
   -webkit-mask-image: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 100%);
   mask-image: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 100%);
   pointer-events: none;
+}
+.dark .dot-glow-layer {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.45) 1.2px, transparent 1.2px);
 }
 
 /* Card hover styling matching Stitch Screen 1 */
@@ -39,10 +54,13 @@
 }
 .gallery-card:hover {
   transform: translateY(-4px);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3), 0 0 30px -5px rgba(0, 0, 0, 0.04);
+}
+.dark .gallery-card:hover {
   box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), 0 0 30px -5px rgba(255, 255, 255, 0.06);
 }
 
-/* Pill digit capsule without slit or middle line */
+/* Pill digit capsule */
 .digit-capsule {
   position: relative;
   background: rgba(18, 18, 20, 0.85);
@@ -51,7 +69,30 @@
   -webkit-backdrop-filter: blur(16px);
 }
 
-/* Ultra-smooth slide-up digit roll animation */
+/* Downward Digit Roll Animation */
+/* Numbers drop down from the top (Từ trên rơi xuống / trượt xuống) */
+@keyframes rollerDropDownIn {
+  0% {
+    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes rollerDropDownOut {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 100%, 0);
+    opacity: 0;
+  }
+}
+
 .roller-wrapper {
   position: relative;
   display: inline-block;
@@ -70,24 +111,26 @@
   height: 100%;
   will-change: transform, opacity;
   transform: translate3d(0, 0, 0);
-  transition: transform 550ms cubic-bezier(0.16, 1, 0.3, 1), opacity 550ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .roller-item.slide-out {
-  transform: translate3d(0, -100%, 0);
-  opacity: 0;
-}
-.roller-item.slide-in-init {
-  transform: translate3d(0, 100%, 0);
-  opacity: 0;
+  animation: rollerDropDownOut 480ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .roller-item.slide-in-active {
-  transform: translate3d(0, 0%, 0);
-  opacity: 1;
+  animation: rollerDropDownIn 480ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Seamless digit tile card - Apple subtle dark elevation (Stitch Screen 2) */
+/* Seamless digit tile card - Apple subtle elevation (Stitch Screen 2) */
 .flip-tile {
   position: relative;
+  background: linear-gradient(180deg, #ffffff 0%, #f7f7f9 100%);
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.9),
+    0 10px 25px -4px rgba(0, 0, 0, 0.08),
+    0 4px 10px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  contain: paint;
+}
+.dark .flip-tile {
   background: linear-gradient(180deg, #18181c 0%, #121215 100%);
   box-shadow: 
     inset 0 1px 1px rgba(255, 255, 255, 0.10),
@@ -95,7 +138,6 @@
     0 14px 35px -6px rgba(0, 0, 0, 0.7),
     0 4px 12px rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  contain: paint;
 }
 .flip-tile::after, .flip-tile::before {
   display: none !important;
@@ -115,7 +157,29 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Ultra-smooth GPU accelerated slide & fade transitions (Apple iOS spring/bezier) */
+/* Ultra-smooth GPU accelerated downward slide transitions for FlipTile */
+@keyframes tileDropDownIn {
+  0% {
+    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes tileDropDownOut {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 100%, 0);
+    opacity: 0;
+  }
+}
+
 .digit-value {
   position: absolute;
   inset: 0;
@@ -125,7 +189,6 @@
   will-change: transform, opacity;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
-  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1), opacity 420ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .digit-value.is-current {
   transform: translate3d(0, 0%, 0);
@@ -133,13 +196,11 @@
   z-index: 2;
 }
 .digit-value.is-entering {
-  transform: translate3d(0, 100%, 0);
-  opacity: 0;
+  animation: tileDropDownIn 480ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
   z-index: 3;
 }
 .digit-value.is-exiting {
-  transform: translate3d(0, -100%, 0);
-  opacity: 0;
+  animation: tileDropDownOut 480ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
   z-index: 1;
   pointer-events: none;
 }

@@ -9,7 +9,7 @@ interface RollerDigitProps {
 export const RollerDigit: React.FC<RollerDigitProps> = ({
   value,
   unitLabel,
-  widthClass = 'min-w-[34px]',
+  widthClass = 'min-w-[36px]',
 }) => {
   const [currentVal, setCurrentVal] = useState(value);
   const [prevVal, setPrevVal] = useState<string | null>(null);
@@ -26,21 +26,19 @@ export const RollerDigit: React.FC<RollerDigitProps> = ({
       const timer = setTimeout(() => {
         setPrevVal(null);
         setAnimating(false);
-      }, 550);
+      }, 480);
 
       return () => clearTimeout(timer);
     }
   }, [value]);
 
-  const wrapperWidth = currentVal.length >= 3 ? 'w-8 min-w-[32px]' : 'w-7 min-w-[28px]';
-
   return (
     <div className="flex items-center gap-1.5">
       <div
-        className={`digit-capsule px-2.5 py-1 rounded-lg border border-white/10 flex items-center justify-center ${widthClass}`}
+        className={`digit-capsule px-2 py-1 rounded-lg border border-white/10 flex items-center justify-center ${widthClass}`}
       >
         <div
-          className={`roller-wrapper font-mono text-[16px] font-bold text-white tabular-nums text-center ${wrapperWidth}`}
+          className="roller-wrapper font-mono text-[16px] font-bold text-white tabular-nums text-center w-8 min-w-[32px]"
         >
           {prevVal !== null && animating && (
             <div className="roller-item slide-out font-mono text-[16px] font-bold text-white">

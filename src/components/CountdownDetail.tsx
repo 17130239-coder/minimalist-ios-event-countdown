@@ -46,7 +46,7 @@ export const CountdownDetail: React.FC<CountdownDetailProps> = ({
           type="button"
           onClick={onBack}
           aria-label="Back to Countdowns"
-          className="inline-flex items-center gap-1.5 py-2 px-2.5 rounded-full bg-surface-container/70 hover:bg-surface-container-high/90 border border-white/10 backdrop-blur-2xl text-on-surface-variant hover:text-white transition-all duration-200 text-[14px] font-medium tracking-tight justify-center cursor-pointer"
+          className="inline-flex items-center gap-1.5 py-2 px-2.5 rounded-full bg-black/5 hover:bg-black/10 dark:bg-surface-container/70 dark:hover:bg-surface-container-high/90 border border-black/10 dark:border-white/10 backdrop-blur-2xl text-slate-700 dark:text-on-surface-variant hover:text-black dark:hover:text-white transition-all duration-200 text-[14px] font-medium tracking-tight justify-center cursor-pointer"
         >
           <span className="material-symbols-outlined text-[17px]">arrow_back_ios_new</span>
         </button>
@@ -56,9 +56,9 @@ export const CountdownDetail: React.FC<CountdownDetailProps> = ({
             type="button"
             onClick={handleShare}
             id="share-card-btn"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-surface-container/70 hover:bg-surface-container-high/90 border border-white/10 backdrop-blur-2xl text-on-surface hover:text-white transition-all duration-200 text-[14px] font-medium tracking-tight cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-black/5 hover:bg-black/10 dark:bg-surface-container/70 dark:hover:bg-surface-container-high/90 border border-black/10 dark:border-white/10 backdrop-blur-2xl text-slate-800 dark:text-on-surface hover:text-black dark:hover:text-white transition-all duration-200 text-[14px] font-medium tracking-tight cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[17px] text-white">ios_share</span>
+            <span className="material-symbols-outlined text-[17px] text-slate-800 dark:text-white">ios_share</span>
             <span>Share</span>
           </button>
         </div>
@@ -66,7 +66,7 @@ export const CountdownDetail: React.FC<CountdownDetailProps> = ({
 
       {/* Editorial Title: Pure Elegance & Minimalist Focus (Exact Stitch Spec) */}
       <div className="text-center mb-10 sm:mb-16">
-        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-white select-none">
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-slate-900 dark:text-white select-none transition-colors">
           {event.name}
         </h1>
       </div>

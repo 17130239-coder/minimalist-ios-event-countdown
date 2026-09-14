@@ -18,15 +18,17 @@
     <script>
       (function() {
         try {
-          ['countdown_events', 'countdown_events_v2', 'countdown_events_v3', 'countdown_events_v4', 'countdown_theme_pref', 'countdown_theme_pref_v2', 'countdown_theme_pref_v3', 'countdown_theme_pref_v4', 'countdown_theme_pref_v5'].forEach(function(k) {
-            localStorage.removeItem(k);
-          });
-          document.documentElement.classList.add('dark');
+          var saved = localStorage.getItem('countdown_theme');
+          if (saved === 'light') {
+            document.documentElement.classList.remove('dark');
+          } else {
+            document.documentElement.classList.add('dark');
+          }
         } catch (e) {}
       })();
     </script>
   </head>
-  <body class="font-body antialiased min-h-screen relative overflow-x-hidden selection:bg-white selection:text-black bg-[#0e0e10] text-[#e5e1e4]">
+  <body class="font-body antialiased min-h-screen relative overflow-x-hidden selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black bg-[#f2f2f7] dark:bg-[#0e0e10] text-[#1c1c1e] dark:text-[#e5e1e4]">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -27,14 +27,13 @@ export const EventCard: React.FC<EventCardProps> = ({
     return () => clearInterval(interval);
   }, [event.targetDate]);
 
-  const daysNum = parseInt(timeLeft.days, 10);
-  const daysWidth = daysNum > 99 ? 'w-8 min-w-[36px]' : 'w-7 min-w-[32px]';
+  const daysWidth = 'min-w-[40px]';
 
   if (viewMode === 'list') {
     return (
       <article
         onClick={() => onSelect(event)}
-        className="event-card gallery-card relative min-h-[160px] rounded-3xl overflow-hidden cursor-pointer group border border-white/10 bg-[#141416] flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 gap-4 shadow-xl transition-all duration-300"
+        className="event-card gallery-card relative min-h-[140px] rounded-3xl overflow-hidden cursor-pointer group border border-white/10 bg-[#141416] flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 gap-4 shadow-xl transition-[transform,box-shadow,border-color] duration-300"
       >
         <img
           src={event.imageUrl}
@@ -44,8 +43,8 @@ export const EventCard: React.FC<EventCardProps> = ({
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/80 to-black/60 pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col gap-1">
-          <h2 className="text-2xl font-bold text-white tracking-tight">
+        <div className="relative z-10 flex flex-col justify-center gap-1 min-h-[2.5rem]">
+          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight line-clamp-1 leading-tight">
             {event.name}
           </h2>
           {event.description && (
@@ -60,11 +59,11 @@ export const EventCard: React.FC<EventCardProps> = ({
             <div className="flex items-center gap-1.5">
               <RollerDigit value={timeLeft.days} unitLabel="D" widthClass={daysWidth} />
               <span className="text-white/30 font-bold text-sm select-none">:</span>
-              <RollerDigit value={timeLeft.hours} unitLabel="H" widthClass="w-6 min-w-[32px]" />
+              <RollerDigit value={timeLeft.hours} unitLabel="H" widthClass="min-w-[34px]" />
               <span className="text-white/30 font-bold text-sm select-none">:</span>
-              <RollerDigit value={timeLeft.minutes} unitLabel="M" widthClass="w-6 min-w-[32px]" />
+              <RollerDigit value={timeLeft.minutes} unitLabel="M" widthClass="min-w-[34px]" />
               <span className="text-white/30 font-bold text-sm select-none">:</span>
-              <RollerDigit value={timeLeft.seconds} unitLabel="S" widthClass="w-6 min-w-[32px]" />
+              <RollerDigit value={timeLeft.seconds} unitLabel="S" widthClass="min-w-[34px]" />
             </div>
           </div>
 
@@ -80,7 +79,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   return (
     <article
       onClick={() => onSelect(event)}
-      className="event-card gallery-card relative min-h-[380px] rounded-3xl overflow-hidden cursor-pointer group border border-white/10 bg-[#141416] flex flex-col justify-between p-6 shadow-xl transition-all duration-300"
+      className="event-card gallery-card relative min-h-[390px] h-[390px] rounded-3xl overflow-hidden cursor-pointer group border border-white/10 bg-[#141416] flex flex-col justify-between p-6 shadow-xl transition-[transform,box-shadow,border-color] duration-300"
     >
       <img
         src={event.imageUrl}
@@ -100,9 +99,11 @@ export const EventCard: React.FC<EventCardProps> = ({
 
         {/* Bottom Area: Title + Horizontal Countdown Capsule Bar */}
         <div className="flex flex-col gap-3.5 mt-auto">
-          <h2 className="text-2xl font-bold text-white tracking-tight">
-            {event.name}
-          </h2>
+          <div className="min-h-[3.75rem] flex items-end">
+            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight line-clamp-2 leading-tight">
+              {event.name}
+            </h2>
+          </div>
 
           <div className="flex items-center justify-between bg-black/85 backdrop-blur-xl border border-white/15 px-3.5 py-2.5 rounded-2xl shadow-2xl">
             <div className="flex items-center gap-1.5 w-full justify-between">
@@ -116,21 +117,21 @@ export const EventCard: React.FC<EventCardProps> = ({
               <RollerDigit
                 value={timeLeft.hours}
                 unitLabel="H"
-                widthClass="w-6 min-w-[32px]"
+                widthClass="min-w-[34px]"
               />
               <span className="text-white/30 font-bold text-sm select-none">:</span>
 
               <RollerDigit
                 value={timeLeft.minutes}
                 unitLabel="M"
-                widthClass="w-6 min-w-[32px]"
+                widthClass="min-w-[34px]"
               />
               <span className="text-white/30 font-bold text-sm select-none">:</span>
 
               <RollerDigit
                 value={timeLeft.seconds}
                 unitLabel="S"
-                widthClass="w-6 min-w-[32px]"
+                widthClass="min-w-[34px]"
               />
             </div>
           </div>

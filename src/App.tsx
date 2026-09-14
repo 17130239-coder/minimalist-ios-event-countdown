@@ -10,8 +10,14 @@ import { EmptyState } from './components/EmptyState';
 import { CalendarView } from './components/CalendarView';
 
 export const App: React.FC = () => {
-  // Theme state - always defaults to dark matching Stitch OLED aesthetic
-  const [isDark, setIsDark] = useState<boolean>(true);
+  // Theme state - defaults to dark, persists to localStorage
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('countdown_theme');
+      if (saved) return saved === 'dark';
+    } catch {}
+    return true;
+  });
 
   // Events state - strictly initialize with canonical Stitch events
   const [events] = useState<CountdownEvent[]>(DEFAULT_EVENTS);
@@ -24,31 +30,18 @@ export const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
 
-  // Purge any legacy localStorage keys that could corrupt user's browser
-  useEffect(() => {
-    try {
-      [
-        'countdown_events',
-        'countdown_events_v2',
-        'countdown_events_v3',
-        'countdown_events_v4',
-        'countdown_theme_pref',
-        'countdown_theme_pref_v2',
-        'countdown_theme_pref_v3',
-        'countdown_theme_pref_v4',
-        'countdown_theme_pref_v5',
-      ].forEach((key) => localStorage.removeItem(key));
-    } catch {
-      // Ignore
-    }
-  }, []);
-
-  // Apply theme class to <html>
+  // Apply theme class to <html> and persist
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add('dark');
+      try {
+        localStorage.setItem('countdown_theme', 'dark');
+      } catch {}
     } else {
       document.documentElement.classList.remove('dark');
+      try {
+        localStorage.setItem('countdown_theme', 'light');
+      } catch {}
     }
   }, [isDark]);
 
@@ -122,7 +115,7 @@ export const App: React.FC = () => {
   }, [events, currentTab, searchQuery, isSorted, sortOrder]);
 
   return (
-    <div className="font-body antialiased selection:bg-white selection:text-black min-h-screen relative overflow-x-hidden bg-[#0e0e10] text-[#e5e1e4] flex flex-col justify-between">
+    <div className="font-body antialiased selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black min-h-screen relative overflow-x-hidden bg-[#f2f2f7] dark:bg-[#0e0e10] text-[#1c1c1e] dark:text-[#e5e1e4] flex flex-col justify-between transition-colors duration-200">
       {/* Interactive Dynamic Background: Ambient Dot Grid & Spotlight Glow */}
       <SpotlightBackground />
 
@@ -134,6 +127,7 @@ export const App: React.FC = () => {
             setCurrentTab(tab);
             if (selectedEventId) handleBackToList();
           }}
+          isDark={isDark}
           onToggleTheme={() => setIsDark((prev) => !prev)}
         />
       )}
