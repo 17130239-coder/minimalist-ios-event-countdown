@@ -48,16 +48,15 @@
   background-image: radial-gradient(circle, rgba(255, 255, 255, 0.45) 1.2px, transparent 1.2px);
 }
 
-/* Card hover styling matching Stitch Screen 1 */
+/* Card hover styling: ONLY a clean border effect on hover (no movement, no scale, no shadow changes) */
 .gallery-card {
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+  transition: border-color 0.22s ease;
 }
 .gallery-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3), 0 0 30px -5px rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.65) !important;
 }
 .dark .gallery-card:hover {
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), 0 0 30px -5px rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.85) !important;
 }
 
 /* Pill digit capsule */

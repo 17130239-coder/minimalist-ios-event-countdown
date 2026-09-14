@@ -33,12 +33,12 @@ export const EventCard: React.FC<EventCardProps> = ({
     return (
       <article
         onClick={() => onSelect(event)}
-        className="event-card gallery-card relative min-h-[140px] rounded-3xl overflow-hidden cursor-pointer group border border-white/10 bg-[#141416] flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 gap-4 shadow-xl transition-[transform,box-shadow,border-color] duration-300"
+        className="event-card gallery-card relative min-h-[140px] rounded-3xl overflow-hidden cursor-pointer border border-black/10 dark:border-white/10 hover:border-black/50 dark:hover:border-white/70 bg-[#141416] flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 gap-4 shadow-xl transition-colors duration-200"
       >
         <img
           src={event.imageUrl}
           alt={event.name}
-          className="absolute inset-0 w-full h-full object-cover saturate-[1.15] brightness-[1.05] transition-transform duration-700 ease-out group-hover:scale-105 opacity-85 group-hover:opacity-100"
+          className="absolute inset-0 w-full h-full object-cover saturate-[1.15] brightness-[1.05] opacity-90"
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/30 pointer-events-none" />
@@ -67,7 +67,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             </div>
           </div>
 
-          <span className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/15 flex items-center justify-center text-white/90 group-hover:bg-white group-hover:text-black transition-all shrink-0">
+          <span className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/15 flex items-center justify-center text-white/90 shrink-0">
             <span className="material-symbols-outlined text-[16px]">north_east</span>
           </span>
         </div>
@@ -79,12 +79,12 @@ export const EventCard: React.FC<EventCardProps> = ({
   return (
     <article
       onClick={() => onSelect(event)}
-      className="event-card gallery-card relative min-h-[390px] h-[390px] rounded-3xl overflow-hidden cursor-pointer group border border-white/10 bg-[#141416] flex flex-col justify-between p-6 shadow-xl transition-[transform,box-shadow,border-color] duration-300"
+      className="event-card gallery-card relative min-h-[390px] h-[390px] rounded-3xl overflow-hidden cursor-pointer border border-black/10 dark:border-white/10 hover:border-black/50 dark:hover:border-white/70 bg-[#141416] flex flex-col justify-between p-6 shadow-xl transition-colors duration-200"
     >
       <img
         src={event.imageUrl}
         alt={event.name}
-        className="absolute inset-0 w-full h-full object-cover saturate-[1.15] brightness-[1.05] transition-transform duration-700 ease-out group-hover:scale-105 opacity-90 group-hover:opacity-100"
+        className="absolute inset-0 w-full h-full object-cover saturate-[1.15] brightness-[1.05] opacity-90"
         loading="lazy"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />
@@ -92,7 +92,7 @@ export const EventCard: React.FC<EventCardProps> = ({
       <div className="relative z-10 flex flex-col justify-between h-full">
         {/* Top-right North-East arrow button */}
         <div className="flex justify-end">
-          <span className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/15 flex items-center justify-center text-white/90 group-hover:bg-white group-hover:text-black transition-all">
+          <span className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/15 flex items-center justify-center text-white/90">
             <span className="material-symbols-outlined text-[16px]">north_east</span>
           </span>
         </div>
