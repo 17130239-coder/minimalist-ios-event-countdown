@@ -38,17 +38,17 @@ export const EventCard: React.FC<EventCardProps> = ({
         <img
           src={event.imageUrl}
           alt={event.name}
-          className="absolute inset-0 w-full h-full object-cover grayscale contrast-125 transition-transform duration-700 ease-out group-hover:scale-105 opacity-65 group-hover:opacity-80"
+          className="absolute inset-0 w-full h-full object-cover saturate-[1.15] brightness-[1.05] transition-transform duration-700 ease-out group-hover:scale-105 opacity-85 group-hover:opacity-100"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/80 to-black/60 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/30 pointer-events-none" />
 
         <div className="relative z-10 flex flex-col justify-center gap-1 min-h-[2.5rem]">
-          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight line-clamp-1 leading-tight">
+          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight line-clamp-1 leading-tight drop-shadow-sm">
             {event.name}
           </h2>
           {event.description && (
-            <p className="text-xs text-white/60 line-clamp-1 max-w-md">
+            <p className="text-xs text-white/75 line-clamp-1 max-w-md drop-shadow-sm">
               {event.description}
             </p>
           )}
@@ -67,7 +67,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             </div>
           </div>
 
-          <span className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white/70 group-hover:bg-white group-hover:text-black transition-all shrink-0">
+          <span className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/15 flex items-center justify-center text-white/90 group-hover:bg-white group-hover:text-black transition-all shrink-0">
             <span className="material-symbols-outlined text-[16px]">north_east</span>
           </span>
         </div>
@@ -84,15 +84,15 @@ export const EventCard: React.FC<EventCardProps> = ({
       <img
         src={event.imageUrl}
         alt={event.name}
-        className="absolute inset-0 w-full h-full object-cover grayscale contrast-125 transition-transform duration-700 ease-out group-hover:scale-105 opacity-65 group-hover:opacity-80"
+        className="absolute inset-0 w-full h-full object-cover saturate-[1.15] brightness-[1.05] transition-transform duration-700 ease-out group-hover:scale-105 opacity-90 group-hover:opacity-100"
         loading="lazy"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />
 
       <div className="relative z-10 flex flex-col justify-between h-full">
         {/* Top-right North-East arrow button */}
         <div className="flex justify-end">
-          <span className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white/70 group-hover:bg-white group-hover:text-black transition-all">
+          <span className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/15 flex items-center justify-center text-white/90 group-hover:bg-white group-hover:text-black transition-all">
             <span className="material-symbols-outlined text-[16px]">north_east</span>
           </span>
         </div>
