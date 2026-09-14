@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CountdownEvent, TimeRemaining } from '../types';
 import { calculateTimeRemaining } from '../utils/time';
 import { FlipTile } from './FlipTile';
+import { ShareModal } from './ShareModal';
 
 interface CountdownDetailProps {
   event: CountdownEvent;
@@ -15,6 +16,7 @@ export const CountdownDetail: React.FC<CountdownDetailProps> = ({
   const [timeLeft, setTimeLeft] = useState<TimeRemaining>(() =>
     calculateTimeRemaining(event.targetDate)
   );
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -28,14 +30,8 @@ export const CountdownDetail: React.FC<CountdownDetailProps> = ({
     return () => clearInterval(interval);
   }, [event.targetDate]);
 
-  const handleShare = async () => {
-    try {
-      if (navigator.clipboard && window.location.href) {
-        await navigator.clipboard.writeText(window.location.href);
-      }
-    } catch {
-      // Fallback
-    }
+  const handleShare = () => {
+    setIsShareModalOpen(true);
   };
 
   return (
@@ -82,6 +78,13 @@ export const CountdownDetail: React.FC<CountdownDetailProps> = ({
       </div>
 
       <div className="py-6" />
+
+      {/* Share Modal with QR Code and Copy Link */}
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        event={event}
+      />
     </div>
   );
 };
