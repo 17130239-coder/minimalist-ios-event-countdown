@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState, useLayoutEffect, useEffect } from 'react';
 import { TabMode } from '../types';
 
 interface HeaderProps {
@@ -14,6 +14,31 @@ export const Header: React.FC<HeaderProps> = ({
   isDark,
   onToggleTheme,
 }) => {
+  const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({
+    left: 0,
+    width: 0,
+  });
+  const tabRefs = useRef<{ [key in TabMode]?: HTMLButtonElement | null }>({});
+
+  const updateIndicator = () => {
+    const activeEl = tabRefs.current[currentTab];
+    if (activeEl) {
+      setIndicatorStyle({
+        left: activeEl.offsetLeft,
+        width: activeEl.offsetWidth,
+      });
+    }
+  };
+
+  useLayoutEffect(() => {
+    updateIndicator();
+  }, [currentTab]);
+
+  useEffect(() => {
+    window.addEventListener('resize', updateIndicator);
+    return () => window.removeEventListener('resize', updateIndicator);
+  }, [currentTab]);
+
   return (
     <header className="fixed top-0 inset-x-0 z-40 bg-[#f2f2f7]/80 dark:bg-[#0e0e10]/80 backdrop-blur-xl border-b border-black/[0.06] dark:border-white/[0.08] transition-colors duration-200">
       <div className="h-16 max-w-7xl mx-auto px-6 flex items-center justify-between gap-4">
@@ -30,36 +55,56 @@ export const Header: React.FC<HeaderProps> = ({
           </span>
         </div>
 
-        {/* Center Segmented Pill Nav (Exact Stitch Spec) */}
-        <nav className="flex items-center p-1 bg-black/[0.05] dark:bg-[#1a1a1d] rounded-full border border-black/5 dark:border-white/10 transition-colors">
+        {/* Center Segmented Pill Nav with smooth sliding animation */}
+        <nav className="relative flex items-center p-1 bg-black/[0.05] dark:bg-[#1a1a1d] rounded-full border border-black/5 dark:border-white/10 transition-colors">
+          {/* Animated Sliding Background Indicator */}
+          {indicatorStyle.width > 0 && (
+            <div
+              className="absolute top-1 bottom-1 rounded-full bg-white shadow-sm dark:bg-white transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none"
+              style={{
+                left: `${indicatorStyle.left}px`,
+                width: `${indicatorStyle.width}px`,
+              }}
+            />
+          )}
+
           <button
+            ref={(el) => {
+              tabRefs.current['upcoming'] = el;
+            }}
             type="button"
             onClick={() => onTabChange('upcoming')}
-            className={`px-5 py-1.5 rounded-full font-semibold text-xs tracking-wider uppercase transition-all ${
+            className={`relative z-10 px-5 py-1.5 rounded-full font-semibold text-xs tracking-wider uppercase transition-colors duration-200 ${
               currentTab === 'upcoming'
-                ? 'bg-white text-black shadow-sm dark:bg-white dark:text-black'
+                ? 'text-black'
                 : 'text-slate-600 dark:text-white/60 hover:text-black dark:hover:text-white font-medium'
             }`}
           >
             Upcoming
           </button>
           <button
+            ref={(el) => {
+              tabRefs.current['archive'] = el;
+            }}
             type="button"
             onClick={() => onTabChange('archive')}
-            className={`px-5 py-1.5 rounded-full font-semibold text-xs tracking-wider uppercase transition-all ${
+            className={`relative z-10 px-5 py-1.5 rounded-full font-semibold text-xs tracking-wider uppercase transition-colors duration-200 ${
               currentTab === 'archive'
-                ? 'bg-white text-black shadow-sm dark:bg-white dark:text-black'
+                ? 'text-black'
                 : 'text-slate-600 dark:text-white/60 hover:text-black dark:hover:text-white font-medium'
             }`}
           >
             Archive
           </button>
           <button
+            ref={(el) => {
+              tabRefs.current['calendar'] = el;
+            }}
             type="button"
             onClick={() => onTabChange('calendar')}
-            className={`px-5 py-1.5 rounded-full font-semibold text-xs tracking-wider uppercase transition-all ${
+            className={`relative z-10 px-5 py-1.5 rounded-full font-semibold text-xs tracking-wider uppercase transition-colors duration-200 ${
               currentTab === 'calendar'
-                ? 'bg-white text-black shadow-sm dark:bg-white dark:text-black'
+                ? 'text-black'
                 : 'text-slate-600 dark:text-white/60 hover:text-black dark:hover:text-white font-medium'
             }`}
           >

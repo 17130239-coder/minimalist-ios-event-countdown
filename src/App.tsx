@@ -183,7 +183,7 @@ export const App: React.FC = () => {
                 }}
               />
             ) : viewMode === 'gallery' ? (
-              <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="eventsStream">
+              <section key="gallery" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in" id="eventsStream">
                 {filteredEvents.map((evt) => (
                   <EventCard
                     key={evt.id}
@@ -194,7 +194,7 @@ export const App: React.FC = () => {
                 ))}
               </section>
             ) : (
-              <section className="flex flex-col gap-4" id="eventsStream">
+              <section key="list" className="flex flex-col gap-4 animate-fade-in" id="eventsStream">
                 {filteredEvents.map((evt) => (
                   <EventCard
                     key={evt.id}
